@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>AuraTerra - Plataforma de Rehabilitación y Control de Fauna</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #070d0b;
+            --bg-elevated: #0b1411;
+            --bg-card: #0f1a17;
+            --bg-input: #14231f;
+            --border-color: #1e332d;
+            --border-soft: rgba(30, 51, 45, 0.72);
+            --border-focus: #10b981;
+            --text-main: #f0fdf4;
+            --text-muted: #86a298;
+            --text-dim: #5e7c71;
+            --accent: #10b981;
+            --accent-hover: #059669;
+            --accent-text-on-accent: #04120e;
+            --accent-glow: rgba(16, 185, 129, 0.14);
+            --blue-accent: #38bdf8;
+            --blue-text: #7dd3fc;
+            --blue-bg: rgba(56, 189, 248, 0.12);
+            --blue-border: rgba(56, 189, 248, 0.28);
+            --danger: #ef4444;
+            --danger-bg: rgba(239, 68, 68, 0.12);
+            --warning: #f59e0b;
+            --warning-bg: rgba(245, 158, 11, 0.12);
+
+            /* Transparente con desenfoque (Modo Oscuro) */
+            --glass-bg: rgba(14, 22, 19, 0.36);
+            --glass-bg-hover: rgba(18, 29, 25, 0.46);
+            --glass-nav-bg: rgba(7, 13, 11, 0.35);
+            --glass-icon-bg: rgba(255, 255, 255, 0.06);
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --glass-border-subtle: rgba(255, 255, 255, 0.08);
+            --glass-border-hover: rgba(255, 255, 255, 0.2);
+            --glass-shadow: 0 14px 34px rgba(0, 0, 0, 0.28);
+            --card-bg: linear-gradient(180deg, rgba(16, 28, 24, 0.94) 0%, rgba(12, 21, 18, 0.98) 100%);
+            --card-shadow: 0 18px 42px rgba(0, 0, 0, 0.42);
+            --input-border: rgba(45, 78, 68, 0.9);
+            --input-focus-bg: #182a25;
+            --search-bg: #111f1b;
+            --search-border: #223b34;
+            --th-bg: rgba(20, 35, 31, 0.95);
+            --row-hover: rgba(56, 189, 248, 0.035);
+            --col-id: #6ee7b7;
+            --col-especie: #9ab5aa;
+            --col-edad: #a7f3d0;
+            --col-obs: #a4bdb3;
+            --obs-principal: #d6e6e0;
+            --status-ok-bg: rgba(16, 185, 129, 0.12);
+            --status-ok-text: #34d399;
+            --status-ok-border: rgba(16, 185, 129, 0.28);
+            --status-crit-bg: rgba(239, 68, 68, 0.13);
+            --status-crit-text: #f87171;
+            --status-crit-border: rgba(239, 68, 68, 0.32);
+            --warning-text: #fbbf24;
+            --warning-border: rgba(245, 158, 11, 0.32);
+
+            /* Recuadro Pacientes en Seguimiento: diseño moderno y limpio (Modo Oscuro) */
+            --seguimiento-bg: linear-gradient(165deg, rgba(16, 29, 25, 0.96) 0%, rgba(9, 17, 15, 0.99) 100%);
+            --seguimiento-border: rgba(110, 231, 183, 0.18);
+            --seguimiento-divider: rgba(255, 255, 255, 0.065);
+            --seguimiento-surface: rgba(12, 22, 19, 0.65);
+            --seguimiento-th-bg: rgba(17, 31, 27, 0.95);
+            --seguimiento-row-hover: rgba(16, 185, 129, 0.055);
+            --seguimiento-subtext: #94b2a7;
+
+            /* Morado oscuro moderno para ID y Editar + botones refinados */
+            --purple-dark-bg: rgba(109, 40, 217, 0.24);
+            --purple-dark-hover-bg: rgba(124, 58, 237, 0.36);
+            --purple-dark-border: rgba(167, 139, 250, 0.36);
+            --purple-dark-text: #ddd6fe;
+            --hist-btn-bg: rgba(20, 184, 166, 0.14);
+            --hist-btn-hover-bg: rgba(20, 184, 166, 0.25);
+            --hist-btn-border: rgba(45, 212, 191, 0.32);
+            --hist-btn-text: #99f6e4;
+            --del-btn-bg: rgba(190, 18, 60, 0.18);
+            --del-btn-hover-bg: rgba(225, 29, 72, 0.3);
+            --del-btn-border: rgba(251, 113, 133, 0.32);
+            --del-btn-text: #fecdd3;
+        }
+
+        [data-theme="light"] {
+            --bg-main: #f3f7f5;
+            --bg-elevated: #ffffff;
+            --bg-card: #ffffff;
+            --bg-input: #f8fbfa;
+            --border-color: #d6e3dd;
+            --border-soft: rgba(214, 227, 221, 0.85);
+            --border-focus: #059669;
+            --text-main: #0f241d;
+            --text-muted: #4b655b;
+            --text-dim: #7b9389;
+            --accent: #059669;
+            --accent-hover: #047857;
+            --accent-text-on-accent: #ffffff;
+            --accent-glow: rgba(5, 150, 105, 0.14);
+            --blue-accent: #0284c7;
+            --blue-text: #0369a1;
+            --blue-bg: rgba(2, 132, 199, 0.1);
+            --blue-border: rgba(2, 132, 199, 0.25);
+            --danger: #dc2626;
+            --danger-bg: rgba(220, 38, 38, 0.1);
+            --warning: #d97706;
+            --warning-bg: rgba(217, 119, 6, 0.12);
+
+            /* Transparente con desenfoque (Modo Claro) */
+            --glass-bg: rgba(255, 255, 255, 0.52);
+            --glass-bg-hover: rgba(255, 255, 255, 0.72);
+            --glass-nav-bg: rgba(240, 246, 243, 0.55);
+            --glass-icon-bg: rgba(15, 36, 29, 0.05);
+            --glass-border: rgba(15, 36, 29, 0.12);
+            --glass-border-subtle: rgba(15, 36, 29, 0.08);
+            --glass-border-hover: rgba(15, 36, 29, 0.22);
+            --glass-shadow: 0 12px 30px rgba(15, 36, 29, 0.08);
+            --card-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(250, 252, 251, 0.99) 100%);
+            --card-shadow: 0 12px 30px rgba(15, 36, 29, 0.08);
+            --input-border: #c8d9d2;
+            --input-focus-bg: #ffffff;
+            --search-bg: #ffffff;
+            --search-border: #c8d9d2;
+            --th-bg: rgba(238, 245, 242, 0.96);
+            --row-hover: rgba(5, 150, 105, 0.045);
+            --col-id: #047857;
+            --col-especie: #3f594f;
+            --col-edad: #065f46;
+            --col-obs: #475f55;
+            --obs-principal: #183128;
+            --status-ok-bg: rgba(5, 150, 105, 0.12);
+            --status-ok-text: #047857;
+            --status-ok-border: rgba(5, 150, 105, 0.28);
+            --status-crit-bg: rgba(220, 38, 38, 0.12);
+            --status-crit-text: #b91c1c;
+            --status-crit-border: rgba(220, 38, 38, 0.28);
+            --warning-text: #b45309;
+            --warning-border: rgba(217, 119, 6, 0.3);
+
+            /* Recuadro Pacientes en Seguimiento: diseño moderno y limpio (Modo Claro) */
+            --seguimiento-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(246, 250, 248, 0.99) 100%);
+            --seguimiento-border: rgba(5, 150, 105, 0.18);
+            --seguimiento-divider: rgba(15, 36, 29, 0.075);
+            --seguimiento-surface: rgba(255, 255, 255, 0.85);
+            --seguimiento-th-bg: #eef5f2;
+            --seguimiento-row-hover: rgba(5, 150, 105, 0.04);
+            --seguimiento-subtext: #536f65;
+
+            /* Morado oscuro moderno para ID y Editar + botones refinados (Modo Claro) */
+            --purple-dark-bg: rgba(91, 33, 182, 0.12);
+            --purple-dark-hover-bg: rgba(109, 40, 217, 0.2);
+            --purple-dark-border: rgba(91, 33, 182, 0.28);
+            --purple-dark-text: #4c1d95;
+            --hist-btn-bg: rgba(13, 148, 136, 0.11);
+            --hist-btn-hover-bg: rgba(13, 148, 136, 0.2);
+            --hist-btn-border: rgba(13, 148, 136, 0.26);
+            --hist-btn-text: #0f766e;
+            --del-btn-bg: rgba(190, 18, 60, 0.11);
+            --del-btn-hover-bg: rgba(190, 18, 60, 0.2);
+            --del-btn-border: rgba(190, 18, 60, 0.26);
+            --del-btn-text: #be123c;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 1.5rem 1.5rem 3rem;
+            transition: background-color 0.22s ease, color 0.22s ease;
+        }
+
+        .container {
+            max-width: 1220px;
+            margin: 0 auto;
+        }
+
+        /* Header transparente con desenfoque */
+        header {
+            position: sticky;
+            top: 0.75rem;
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1.25rem;
+            margin-bottom: 1.9rem;
+            padding: 1.35rem 1.7rem;
+            border-radius: 20px;
+            background-color: var(--glass-bg);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+            transition: background-color 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .brand-icon {
+            background-color: var(--glass-icon-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.45rem;
+            color: var(--accent);
+        }
+
+        .brand-title-row {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            flex-wrap: wrap;
+        }
+
+        .brand h1 {
+            font-size: 1.45rem;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+        }
+
+        .env-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.38rem;
+            padding: 0.22rem 0.65rem;
+            border-radius: 999px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--blue-text);
+            background-color: var(--blue-bg);
+            border: 1px solid var(--blue-border);
+        }
+
+        .env-pill::before {
+            content: "";
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: var(--blue-accent);
+        }
+
+        .brand p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 0.15rem;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 0.55rem;
+            flex-wrap: wrap;
+            background-color: var(--glass-nav-bg);
+            padding: 0.35rem;
+            border-radius: 13px;
+            border: 1px solid var(--glass-border-subtle);
+            backdrop-filter: blur(14px);
+        }
+
+        .nav-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 0.52rem 0.9rem;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .nav-link:hover {
+            color: var(--text-main);
+            background-color: var(--glass-icon-bg);
+        }
+
+        .nav-link.active {
+            color: var(--accent-text-on-accent);
+            background-color: var(--accent);
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.28);
+        }
+
+        .theme-btn {
+            background-color: var(--glass-nav-bg);
+            color: var(--text-main);
+            border: 1px solid var(--glass-border);
+            border-radius: 13px;
+            padding: 0.58rem 0.95rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .theme-btn:hover {
+            background-color: var(--glass-bg-hover);
+            border-color: var(--glass-border-hover);
+            transform: translateY(-1px);
+        }
+
+        /* KPI Cards transparentes con desenfoque */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(225px, 1fr));
+            gap: 1.15rem;
+            margin-bottom: 1.85rem;
+        }
+
+        .stat-card {
+            position: relative;
+            overflow: hidden;
+            background-color: var(--glass-bg);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--glass-border);
+            border-radius: 18px;
+            padding: 1.35rem 1.45rem;
+            display: flex;
+            align-items: center;
+            gap: 1.1rem;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.22);
+            transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.22s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            background-color: var(--glass-bg-hover);
+            border-color: var(--glass-border-hover);
+        }
+
+        .stat-icon {
+            background-color: var(--glass-icon-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            color: var(--accent);
+            flex-shrink: 0;
+        }
+
+        .stat-icon.icon-critico {
+            background-color: var(--danger-bg);
+            border-color: var(--status-crit-border);
+            color: var(--status-crit-text);
+        }
+
+        .stat-icon.icon-azul {
+            background-color: var(--blue-bg);
+            border-color: var(--blue-border);
+            color: var(--blue-accent);
+        }
+
+        .stat-info {
+            min-width: 0;
+        }
+
+        .stat-info h3 {
+            font-size: 1.28rem;
+            font-weight: 700;
+            color: var(--text-main);
+            letter-spacing: -0.025em;
+            line-height: 1.2;
+            font-variant-numeric: tabular-nums;
+            white-space: nowrap;
+        }
+
+        .stat-info p {
+            font-size: 0.69rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-top: 0.28rem;
+            white-space: nowrap;
+        }
+
+        /* Content Cards */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 1.85rem 2rem;
+            margin-bottom: 1.85rem;
+            box-shadow: var(--card-shadow);
+            transition: background 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-soft);
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .card-title-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+
+        .card-title {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--text-main);
+            letter-spacing: -0.015em;
+        }
+
+        .card-subtitle {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 1.15rem 1.25rem;
+            margin-bottom: 1.45rem;
+        }
+
+        @media (max-width: 900px) {
+            .form-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 560px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            display: block;
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 0.48rem;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            background-color: var(--bg-input);
+            border: 1px solid var(--input-border);
+            border-radius: 12px;
+            padding: 0.78rem 1rem;
+            color: var(--text-main);
+            font-size: 0.88rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s ease;
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+            color: var(--text-dim);
+        }
+
+        input:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+            background-color: var(--input-focus-bg);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 86px;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background-color: var(--accent);
+            color: var(--accent-text-on-accent);
+            font-weight: 600;
+            border: none;
+            border-radius: 12px;
+            padding: 0.78rem 1.55rem;
+            cursor: pointer;
+            font-size: 0.88rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.55rem;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.25);
+            white-space: nowrap;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.35);
+        }
+
+        .btn-sm {
+            padding: 0.46rem 0.88rem;
+            font-size: 0.74rem;
+            border-radius: 10px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            transition: all 0.18s ease;
+        }
+
+        .btn-historial {
+            background-color: var(--hist-btn-bg);
+            color: var(--hist-btn-text);
+            border: 1px solid var(--hist-btn-border);
+        }
+
+        .btn-historial:hover {
+            background-color: var(--hist-btn-hover-bg);
+            transform: translateY(-1px);
+        }
+
+        .btn-edit {
+            background-color: var(--purple-dark-bg);
+            color: var(--purple-dark-text);
+            border: 1px solid var(--purple-dark-border);
+        }
+
+        .btn-edit:hover {
+            background-color: var(--purple-dark-hover-bg);
+            transform: translateY(-1px);
+        }
+
+        .btn-delete {
+            background-color: var(--del-btn-bg);
+            color: var(--del-btn-text);
+            border: 1px solid var(--del-btn-border);
+        }
+
+        .btn-delete:hover {
+            background-color: var(--del-btn-hover-bg);
+            transform: translateY(-1px);
+        }
+
+        /* =========================================================
+           RECUADRO DE PACIENTES EN SEGUIMIENTO: DISEÑO MODERNO Y LIMPIO
+           ========================================================= */
+        .card-seguimiento-moderno {
+            background: var(--seguimiento-bg);
+            border: 1px solid var(--seguimiento-border);
+            border-radius: 24px;
+            padding: 1.9rem 2.1rem;
+            box-shadow: 0 22px 50px rgba(0, 0, 0, 0.45);
+        }
+
+        [data-theme="light"] .card-seguimiento-moderno {
+            box-shadow: 0 14px 36px rgba(15, 36, 29, 0.08);
+        }
+
+        .seguimiento-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1.15rem;
+            padding-bottom: 1.3rem;
+            margin-bottom: 1.45rem;
+            border-bottom: 1px solid var(--seguimiento-divider);
+        }
+
+        .seguimiento-heading {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .seguimiento-title {
+            font-size: 1.24rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+            color: var(--text-main);
+        }
+
+        .seguimiento-subtitle {
+            font-size: 0.8rem;
+            color: var(--seguimiento-subtext);
+        }
+
+        .seguimiento-search {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+        }
+
+        .seguimiento-search input {
+            width: 285px;
+            max-width: 100%;
+            padding: 0.68rem 1rem;
+            border-radius: 12px;
+            font-size: 0.84rem;
+            background-color: var(--seguimiento-surface);
+            border: 1px solid var(--seguimiento-divider);
+            color: var(--text-main);
+        }
+
+        .seguimiento-search input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+
+        .seguimiento-table-wrap {
+            overflow-x: auto;
+            border-radius: 16px;
+            border: 1px solid var(--seguimiento-divider);
+            background-color: var(--seguimiento-surface);
+        }
+
+        .seguimiento-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.88rem;
+        }
+
+        .seguimiento-table th {
+            padding: 0.95rem 1.25rem;
+            background-color: var(--seguimiento-th-bg);
+            color: var(--text-muted);
+            font-size: 0.68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.09em;
+            border-bottom: 1px solid var(--seguimiento-divider);
+            white-space: nowrap;
+        }
+
+        .seguimiento-table td {
+            padding: 1.15rem 1.25rem;
+            border-bottom: 1px solid var(--seguimiento-divider);
+            vertical-align: middle;
+        }
+
+        .seguimiento-table tbody tr {
+            transition: background-color 0.16s ease;
+        }
+
+        .seguimiento-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .seguimiento-table tbody tr:hover {
+            background-color: var(--seguimiento-row-hover);
+        }
+
+        .id-chip {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.3rem 0.68rem;
+            border-radius: 9px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+            background-color: var(--purple-dark-bg);
+            border: 1px solid var(--purple-dark-border);
+            color: var(--purple-dark-text);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            white-space: nowrap;
+        }
+
+        .paciente-bloque {
+            display: flex;
+            flex-direction: column;
+            gap: 0.22rem;
+        }
+
+        .paciente-nombre {
+            color: var(--text-main);
+            font-weight: 600;
+            font-size: 0.96rem;
+            text-decoration: none;
+            letter-spacing: -0.01em;
+            transition: color 0.16s ease;
+        }
+
+        .paciente-nombre:hover {
+            color: var(--status-ok-text);
+        }
+
+        .paciente-especie-sub {
+            color: var(--seguimiento-subtext);
+            font-size: 0.79rem;
+            font-weight: 500;
+            text-transform: capitalize;
+        }
+
+        .edad-valor {
+            color: var(--col-edad);
+            font-weight: 600;
+            font-size: 0.85rem;
+            font-variant-numeric: tabular-nums;
+            white-space: nowrap;
+        }
+
+        .obs-card-cell {
+            display: flex;
+            flex-direction: column;
+            gap: 0.45rem;
+            max-width: 340px;
+        }
+
+        .obs-texto {
+            color: var(--obs-principal);
+            font-size: 0.85rem;
+            font-weight: 500;
+            line-height: 1.45;
+        }
+
+        .acciones-group {
+            display: inline-flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 0.5rem;
+            white-space: nowrap;
+        }
+
+        /* Status Badges */
+        .badge-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.36rem 0.82rem;
+            border-radius: 999px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+            background-color: var(--status-ok-bg);
+            color: var(--status-ok-text);
+            border: 1px solid var(--status-ok-border);
+        }
+
+        .badge-status::before {
+            content: "";
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: var(--status-ok-text);
+        }
+
+        .badge-critico {
+            background-color: var(--status-crit-bg);
+            color: var(--status-crit-text);
+            border-color: var(--status-crit-border);
+        }
+
+        .badge-critico::before {
+            background-color: var(--status-crit-text);
+        }
+
+        .badge-warning {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.25rem 0.65rem;
+            border-radius: 999px;
+            font-size: 0.69rem;
+            font-weight: 600;
+            white-space: nowrap;
+            background-color: var(--warning-bg);
+            color: var(--warning-text);
+            border: 1px solid var(--warning-border);
+            margin-top: 0.35rem;
+        }
+
+        .meta-clinica {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.24rem 0.68rem;
+            border-radius: 999px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--blue-text);
+            background-color: var(--blue-bg);
+            border: 1px solid var(--blue-border);
+            width: fit-content;
+        }
+
+        .meta-clinica::before {
+            content: "📋";
+            font-size: 0.68rem;
+        }
+
+        .cancel-link {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .cancel-link:hover {
+            color: var(--text-main);
+        }
+
+        .pagination-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1.25rem;
+            font-size: 0.84rem;
+            color: var(--text-muted);
+        }
+    </style>
+    <script>
+        (function () {
+            const savedTheme = localStorage.getItem('auraterra-theme') || 'dark';
+            if (savedTheme === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+</head>
+
+<body>
+
+    <div class="container">
+        <header>
+            <div class="brand">
+                <div class="brand-icon">🌿</div>
+                <div>
+                    <div class="brand-title-row">
+                        <h1>AuraTerra</h1>
+                        <span class="env-pill">Clínica Activa</span>
+                    </div>
+                    <p>Plataforma de Rehabilitación y Control de Fauna</p>
+                </div>
+            </div>
+            <div class="header-controls">
+                <nav class="nav-links">
+                    <a th:href="@{/animales/vista}" class="nav-link active">🩺 Clínico / Veterinario</a>
+                    <a th:href="@{/admin/dashboard}" class="nav-link">🛡️ Administrador</a>
+                    <a th:href="@{/ciudadano/inicio}" class="nav-link">🌿 Portal Ciudadano</a>
+                </nav>
+                <button type="button" id="themeToggleBtn" class="theme-btn"
+                    aria-label="Cambiar entre modo oscuro y modo claro">
+                    <span id="themeIcon">☀️</span>
+                    <span id="themeLabel">Modo claro</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Formulario de Registro / Edición -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title-wrap">
+                    <h2 class="card-title"
+                        th:text="${nuevoAnimal.id != null} ? '✏️ Editar Paciente #' + ${nuevoAnimal.id} : '✨ Ingreso de Nuevo Paciente'">
+                        Ingreso de Nuevo Paciente</h2>
+                    <span class="card-subtitle">Registra datos clínicos iniciales, especie y condiciones de
+                        rescate</span>
+                </div>
+            </div>
+            <form th:action="@{/animales/guardar}" th:object="${nuevoAnimal}" method="post">
+                <input type="hidden" th:field="*{id}" />
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Nombre del Animal</label>
+                        <input type="text" th:field="*{nombre}" placeholder="Ej. Luna" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Especie</label>
+                        <input type="text" th:field="*{especie}" placeholder="Ej. Felis silvestris" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Edad Estimada</label>
+                        <input type="number" th:field="*{edad}" placeholder="Años" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Estado Diagnóstico</label>
+                        <input type="text" th:field="*{estadoSalud}" placeholder="Ej. En observación" required />
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Observaciones Médicas / Rescate</label>
+                        <textarea th:field="*{observaciones}"
+                            placeholder="Detalles de la condición de ingreso, zona de rescate..."></textarea>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 1.25rem; align-items: center;">
+                    <button type="submit" class="btn-primary">
+                        <span th:text="${nuevoAnimal.id != null} ? '💾' : '➕'"></span>
+                        <span
+                            th:text="${nuevoAnimal.id != null} ? 'Actualizar Paciente' : 'Registrar Paciente'">Registrar
+                            Paciente</span>
+                    </button>
+                    <a th:if="${nuevoAnimal.id != null}" th:href="@{/animales/vista}" class="cancel-link">Cancelar
+                        edición</a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Tarjetas de Estadísticas (KPIs) justo arriba de Pacientes en Seguimiento -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">🐾</div>
+                <div class="stat-info">
+                    <h3 th:text="${totalAnimales != null ? totalAnimales : 0}">0</h3>
+                    <p>Pacientes Registrados</p>
+                </div>
+            </div>
+            <div class="stat-card stat-critico">
+                <div class="stat-icon icon-critico">🚨</div>
+                <div class="stat-info">
+                    <h3 th:text="${totalCriticos != null ? totalCriticos : 0}">0</h3>
+                    <p>Casos Críticos</p>
+                </div>
+            </div>
+            <div class="stat-card stat-azul">
+                <div class="stat-icon icon-azul">🩺</div>
+                <div class="stat-info">
+                    <h3 th:text="${totalEnRehabilitacion != null ? totalEnRehabilitacion : 0}">0</h3>
+                    <p>En Rehabilitación</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">✨</div>
+                <div class="stat-info">
+                    <h3>Sistema Óptimo</h3>
+                    <p>Estado Operativo</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabla y Buscador (Diseño limpio y moderno) -->
+        <div class="card-seguimiento-moderno">
+            <div class="seguimiento-top">
+                <div class="seguimiento-heading">
+                    <h2 class="seguimiento-title">Pacientes en Seguimiento</h2>
+                    <span class="seguimiento-subtitle">Expedientes activos, estado clínico y último control
+                        veterinario</span>
+                </div>
+                <form class="seguimiento-search" th:action="@{/animales/vista}" method="get">
+                    <input type="text" name="busqueda" placeholder="Buscar por nombre o especie..."
+                        th:value="${busqueda}" />
+                    <button type="submit" class="btn-primary" style="padding: 0.68rem 1.25rem; font-size: 0.84rem;">
+                        <span>⌕</span>
+                        <span>Buscar</span>
+                    </button>
+                </form>
+            </div>
+
+            <div class="seguimiento-table-wrap">
+                <table class="seguimiento-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Paciente</th>
+                            <th>Edad</th>
+                            <th>Estado</th>
+                            <th>Observaciones y Control</th>
+                            <th style="text-align: right;">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${#lists.isEmpty(animales)}">
+                            <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 3rem;">No se
+                                encontraron registros de pacientes.</td>
+                        </tr>
+                        <tr th:each="a : ${animales}">
+                            <td>
+                                <span class="id-chip" th:text="${'#' + a.id}">#1</span>
+                            </td>
+
+                            <td>
+                                <div class="paciente-bloque">
+                                    <a th:href="@{/animales/historial/{id}(id=${a.id})}" th:text="${a.nombre}"
+                                        class="paciente-nombre" title="Ver Expediente Clínico">Nombre</a>
+                                    <span class="paciente-especie-sub" th:text="${a.especie}">Especie</span>
+                                </div>
+                            </td>
+
+                            <td>
+                                <span class="edad-valor"
+                                    th:text="${a.edad != null ? a.edad + ' años' : 'N/A'}">Edad</span>
+                            </td>
+
+                            <td>
+                                <span class="badge-status"
+                                    th:classappend="${a.estadoSalud != null and (#strings.toUpperCase(a.estadoSalud).contains('CRITIC') or #strings.toUpperCase(a.estadoSalud).contains('CRÍTIC'))} ? ' badge-critico' : ''"
+                                    th:text="${a.estadoSalud != null && !#strings.isEmpty(a.estadoSalud) ? a.estadoSalud : 'SIN ESTADO'}">Saludable</span>
+                                <div
+                                    th:if="${#strings.isEmpty(a.observaciones) || a.estadoSalud == null || #strings.isEmpty(a.estadoSalud)}">
+                                    <span class="badge-warning">⚠️ Pendiente valoración</span>
+                                </div>
+                            </td>
+
+                            <td>
+                                <div class="obs-card-cell">
+                                    <div class="obs-texto"
+                                        th:text="${!#strings.isEmpty(a.observaciones) ? a.observaciones : 'Sin observaciones registradas'}">
+                                        Observaciones
+                                    </div>
+                                    <div class="meta-clinica"
+                                        th:text="${ultimoControlPorAnimal != null && ultimoControlPorAnimal.containsKey(a.id) ? ultimoControlPorAnimal.get(a.id) : 'Sin controles aún'}">
+                                        0 notas
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td style="text-align: right;">
+                                <div class="acciones-group">
+                                    <a th:href="@{/animales/historial/{id}(id=${a.id})}" class="btn-sm btn-historial">+
+                                        Historial</a>
+                                    <a th:href="@{/animales/editar/{id}(id=${a.id})}" class="btn-sm btn-edit">✎
+                                        Editar</a>
+                                    <a th:href="@{/animales/eliminar/{id}(id=${a.id})}" class="btn-sm btn-delete"
+                                        onclick="return confirm('¿Estás segura de eliminar este registro del sistema?');">✕
+                                        Eliminar</a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pagination-bar" th:if="${totalPages != null && totalPages > 1}">
+                <span>Página <strong th:text="${currentPage + 1}">1</strong> de <strong
+                        th:text="${totalPages}">1</strong></span>
+                <div style="display: flex; gap: 0.5rem;">
+                    <a th:if="${currentPage > 0}"
+                        th:href="@{/animales/vista(page=${currentPage - 1}, busqueda=${busqueda})}"
+                        class="btn-sm btn-edit">← Anterior</a>
+                    <a th:if="${currentPage + 1 < totalPages}"
+                        th:href="@{/animales/vista(page=${currentPage + 1}, busqueda=${busqueda})}"
+                        class="btn-sm btn-edit">Siguiente →</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            const toggleBtn = document.getElementById('themeToggleBtn');
+            const themeIcon = document.getElementById('themeIcon');
+            const themeLabel = document.getElementById('themeLabel');
+
+            function syncThemeUI(theme) {
+                if (theme === 'light') {
+                    document.documentElement.setAttribute('data-theme', 'light');
+                    themeIcon.textContent = '🌙';
+                    themeLabel.textContent = 'Modo oscuro';
+                } else {
+                    document.documentElement.removeAttribute('data-theme');
+                    themeIcon.textContent = '☀️';
+                    themeLabel.textContent = 'Modo claro';
+                }
+            }
+
+            const initialTheme = localStorage.getItem('auraterra-theme') || 'dark';
+            syncThemeUI(initialTheme);
+
+            toggleBtn.addEventListener('click', function () {
+                const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+                const nextTheme = isLight ? 'dark' : 'light';
+                localStorage.setItem('auraterra-theme', nextTheme);
+                syncThemeUI(nextTheme);
+            });
+        })();
+    </script>
+
+</body>
+
+</html>

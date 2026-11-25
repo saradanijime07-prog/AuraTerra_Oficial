@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AuraTerra - Acceso</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #070d0c;
+            --bg-gradient:
+                radial-gradient(ellipse at top left, rgba(99, 102, 241, 0.16), transparent 52%),
+                radial-gradient(ellipse at bottom right, rgba(16, 185, 129, 0.14), transparent 55%),
+                linear-gradient(145deg, #060b0d 0%, #0b1318 55%, #090e1a 100%);
+            --panel-bg: rgba(12, 20, 24, 0.88);
+            --panel-border: rgba(129, 140, 248, 0.22);
+            --panel-shadow: 0 28px 70px rgba(0, 0, 0, 0.55);
+
+            --input-bg: rgba(17, 29, 34, 0.92);
+            --input-focus-bg: rgba(21, 36, 42, 0.98);
+            --input-border: rgba(148, 163, 184, 0.22);
+            --border-focus: #6366f1;
+            --border-soft: rgba(255, 255, 255, 0.08);
+
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --text-dim: #64748b;
+
+            --emerald: #10b981;
+            --emerald-hover: #059669;
+            --indigo: #6366f1;
+            --purple-dark: #4c1d95;
+            --indigo-text: #c7d2fe;
+
+            --danger-bg: rgba(239, 68, 68, 0.14);
+            --danger-border: rgba(248, 113, 113, 0.34);
+            --danger-text: #fca5a5;
+
+            --glass-bg: rgba(12, 20, 24, 0.65);
+            --glass-nav-bg: rgba(17, 29, 34, 0.72);
+            --glass-border: rgba(255, 255, 255, 0.12);
+        }
+
+        [data-theme="light"] {
+            --bg-main: #eef2f7;
+            --bg-gradient:
+                radial-gradient(ellipse at top left, rgba(79, 70, 229, 0.12), transparent 52%),
+                radial-gradient(ellipse at bottom right, rgba(5, 150, 105, 0.12), transparent 55%),
+                linear-gradient(145deg, #f1f5f9 0%, #eef2ff 55%, #ecfdf5 100%);
+            --panel-bg: rgba(255, 255, 255, 0.94);
+            --panel-border: rgba(79, 70, 229, 0.18);
+            --panel-shadow: 0 22px 54px rgba(15, 23, 42, 0.1);
+
+            --input-bg: #f8fafc;
+            --input-focus-bg: #ffffff;
+            --input-border: #cbd5e1;
+            --border-focus: #4f46e5;
+            --border-soft: rgba(15, 23, 42, 0.08);
+
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --text-dim: #64748b;
+
+            --emerald: #059669;
+            --emerald-hover: #047857;
+            --indigo: #4f46e5;
+            --purple-dark: #4c1d95;
+            --indigo-text: #3730a3;
+
+            --danger-bg: rgba(220, 38, 38, 0.1);
+            --danger-border: rgba(220, 38, 38, 0.25);
+            --danger-text: #b91c1c;
+
+            --glass-bg: rgba(255, 255, 255, 0.78);
+            --glass-nav-bg: rgba(241, 245, 249, 0.85);
+            --glass-border: rgba(15, 23, 42, 0.11);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-main);
+            background-image: var(--bg-gradient);
+            background-attachment: fixed;
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 1.5rem 1.5rem 3.5rem;
+            display: flex;
+            flex-direction: column;
+            transition: background-color 0.22s ease, color 0.22s ease;
+        }
+
+        .page-wrap {
+            width: 100%;
+            max-width: 1220px;
+            margin: 0 auto;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            padding: 1.1rem 1.6rem;
+            border-radius: 18px;
+            background-color: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            margin-bottom: 2.2rem;
+        }
+
+        .brand-mini {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            text-decoration: none;
+            color: var(--text-main);
+        }
+
+        .brand-mini-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            background-color: rgba(16, 185, 129, 0.14);
+            border: 1px solid rgba(16, 185, 129, 0.28);
+        }
+
+        .brand-mini strong {
+            display: block;
+            font-size: 1.18rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .brand-mini span {
+            display: block;
+            font-size: 0.76rem;
+            color: var(--text-muted);
+        }
+
+        .top-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            flex-wrap: wrap;
+        }
+
+        .back-link {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 0.82rem;
+            font-weight: 600;
+            padding: 0.58rem 1rem;
+            border-radius: 12px;
+            background-color: var(--glass-nav-bg);
+            border: 1px solid var(--glass-border);
+            transition: all 0.18s ease;
+        }
+
+        .back-link:hover {
+            color: var(--text-main);
+            border-color: var(--border-focus);
+        }
+
+        .theme-btn {
+            background-color: var(--glass-nav-bg);
+            color: var(--text-main);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 0.58rem 1rem;
+            font-size: 0.82rem;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            transition: all 0.18s ease;
+        }
+
+        .theme-btn:hover {
+            border-color: var(--border-focus);
+        }
+
+        .auth-center {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .auth-panel-large {
+            width: 100%;
+            max-width: 720px;
+            background: var(--panel-bg);
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
+            border: 1px solid var(--panel-border);
+            border-radius: 26px;
+            padding: 2.5rem 2.75rem;
+            box-shadow: var(--panel-shadow);
+        }
+
+        @media (max-width: 640px) {
+            .auth-panel-large {
+                padding: 1.75rem 1.35rem;
+                border-radius: 20px;
+            }
+        }
+
+        .panel-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1.25rem;
+            padding-bottom: 1.5rem;
+            margin-bottom: 1.65rem;
+            border-bottom: 1px solid var(--border-soft);
+        }
+
+        .panel-title {
+            font-size: 1.7rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+            line-height: 1.2;
+        }
+
+        .panel-subtitle {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            margin-top: 0.35rem;
+        }
+
+        .auth-tabs {
+            display: inline-grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.38rem;
+            padding: 0.35rem;
+            border-radius: 14px;
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-soft);
+        }
+
+        @media (max-width: 640px) {
+            .auth-tabs {
+                width: 100%;
+                display: grid;
+            }
+        }
+
+        .auth-tab {
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.84rem;
+            font-weight: 600;
+            padding: 0.65rem 1.15rem;
+            border-radius: 11px;
+            cursor: pointer;
+            transition: all 0.18s ease;
+            white-space: nowrap;
+        }
+
+        .auth-tab.active {
+            color: #ffffff;
+            background: linear-gradient(135deg, var(--indigo) 0%, var(--purple-dark) 100%);
+            box-shadow: 0 6px 18px rgba(99, 102, 241, 0.32);
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        .fields-two-col {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1.25rem 1.35rem;
+            margin-bottom: 1.25rem;
+        }
+
+        @media (max-width: 600px) {
+            .fields-two-col {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .field-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .fields-two-col .field-group {
+            margin-bottom: 0;
+        }
+
+        label {
+            display: block;
+            font-size: 0.73rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+        }
+
+        input {
+            width: 100%;
+            background-color: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: 13px;
+            padding: 0.9rem 1.1rem;
+            color: var(--text-main);
+            font-size: 0.92rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.18s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+            background-color: var(--input-focus-bg);
+        }
+
+        .pass-box {
+            position: relative;
+        }
+
+        .pass-box input {
+            padding-right: 3rem;
+        }
+
+        .eye-btn {
+            position: absolute;
+            right: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 34px;
+            height: 34px;
+            border-radius: 9px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.16s ease, background-color 0.16s ease;
+        }
+
+        .eye-btn:hover {
+            color: var(--text-main);
+            background-color: rgba(99, 102, 241, 0.14);
+        }
+
+        .eye-btn svg {
+            width: 18px;
+            height: 18px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 1.9;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .eye-closed {
+            display: none;
+        }
+
+        .eye-btn.showing .eye-open {
+            display: none;
+        }
+
+        .eye-btn.showing .eye-closed {
+            display: block;
+        }
+
+        .form-options {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin: 1.25rem 0 1.5rem;
+            font-size: 0.84rem;
+        }
+
+        .check-wrap {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            text-transform: none;
+            letter-spacing: normal;
+            font-weight: 500;
+            margin-bottom: 0;
+        }
+
+        .check-wrap input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--indigo);
+            cursor: pointer;
+        }
+
+        .action-link {
+            background: transparent;
+            border: none;
+            color: var(--indigo-text);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.84rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .action-link:hover {
+            text-decoration: underline;
+        }
+
+        .submit-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            padding-top: 0.35rem;
+        }
+
+        .btn-submit {
+            min-width: 220px;
+            background: linear-gradient(135deg, var(--emerald) 0%, #0d9488 100%);
+            color: #ffffff;
+            font-weight: 700;
+            border: none;
+            border-radius: 13px;
+            padding: 0.92rem 1.75rem;
+            cursor: pointer;
+            font-size: 0.92rem;
+            font-family: 'Inter', sans-serif;
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.25);
+            transition: all 0.18s ease;
+        }
+
+        .btn-submit:hover {
+            filter: brightness(1.06);
+            transform: translateY(-1px);
+        }
+
+        .switch-hint {
+            font-size: 0.84rem;
+            color: var(--text-muted);
+        }
+
+        .feedback-box {
+            display: none;
+            margin-bottom: 1.25rem;
+            padding: 0.88rem 1.1rem;
+            border-radius: 13px;
+            font-size: 0.84rem;
+            font-weight: 600;
+            line-height: 1.45;
+        }
+
+        .feedback-box.error {
+            display: block;
+            background-color: var(--danger-bg);
+            border: 1px solid var(--danger-border);
+            color: var(--danger-text);
+        }
+
+        .feedback-box.success {
+            display: block;
+            background-color: rgba(16, 185, 129, 0.14);
+            border: 1px solid rgba(52, 211, 153, 0.34);
+            color: var(--text-main);
+        }
+    </style>
+    <script>
+        (function () {
+            const savedTheme = localStorage.getItem('auraterra-theme') || 'dark';
+            if (savedTheme === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+</head>
+
+<body>
+    <div class="page-wrap">
+        <div class="top-bar">
+            <a th:href="@{/ciudadano/inicio}" class="brand-mini">
+                <div class="brand-mini-icon">🌿</div>
+                <div>
+                    <strong>AuraTerra</strong>
+                    <span>Portal Ciudadano</span>
+                </div>
+            </a>
+
+            <div class="top-actions">
+                <a th:href="@{/ciudadano/inicio}" class="back-link">← Volver al Portal</a>
+                <button type="button" id="themeToggleBtn" class="theme-btn" aria-label="Cambiar tema">
+                    <span id="themeIcon">☀️</span>
+                    <span id="themeLabel">Modo claro</span>
+                </button>
+            </div>
+        </div>
+
+        <main class="auth-center">
+            <section class="auth-panel-large">
+                <div class="panel-top">
+                    <div>
+                        <h1 class="panel-title" id="panelTitle">Iniciar sesión</h1>
+                        <p class="panel-subtitle" id="panelSubtitle">Accede para gestionar y dar seguimiento a tus
+                            reportes</p>
+                    </div>
+
+                    <div class="auth-tabs" id="authTabs">
+                        <button type="button" class="auth-tab active" data-target="loginForm">Iniciar sesión</button>
+                        <button type="button" class="auth-tab" data-target="registerForm">Crear cuenta</button>
+                    </div>
+                </div>
+
+                <div id="feedbackBox" class="feedback-box"></div>
+
+                <!-- INICIAR SESIÓN -->
+                <form id="loginForm" class="auth-form active">
+                    <div class="fields-two-col">
+                        <div class="field-group">
+                            <label for="loginEmail">Correo electrónico</label>
+                            <input type="email" id="loginEmail" name="username" required />
+                        </div>
+
+                        <div class="field-group">
+                            <label for="loginPassword">Contraseña</label>
+                            <div class="pass-box">
+                                <input type="password" id="loginPassword" name="password" required />
+                                <button type="button" class="eye-btn" data-target="loginPassword"
+                                    aria-label="Mostrar u ocultar contraseña">
+                                    <svg class="eye-open" viewBox="0 0 24 24">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                    <svg class="eye-closed" viewBox="0 0 24 24">
+                                        <path
+                                            d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a21.77 21.77 0 0 1 5.06-5.94">
+                                        </path>
+                                        <path
+                                            d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19">
+                                        </path>
+                                        <line x1="1" y1="1" x2="23" y2="23"></line>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-options">
+                        <label class="check-wrap">
+                            <input type="checkbox" id="rememberSession" checked />
+                            <span>Recordar sesión</span>
+                        </label>
+                        <button type="button" class="action-link" id="openRecoverBtn">Restaurar contraseña</button>
+                    </div>
+
+                    <div class="submit-row">
+                        <button type="submit" class="btn-submit">Ingresar al portal</button>
+                        <p class="switch-hint">
+                            ¿Aún no tienes cuenta?
+                            <button type="button" class="action-link" id="openRegisterBtn">Crear cuenta</button>
+                        </p>
+                    </div>
+                </form>
+
+                <!-- CREAR CUENTA -->
+                <form id="registerForm" class="auth-form">
+                    <div class="fields-two-col">
+                        <div class="field-group">
+                            <label for="regName">Nombre completo</label>
+                            <input type="text" id="regName" required />
+                        </div>
+                        <div class="field-group">
+                            <label for="regPhone">Teléfono</label>
+                            <input type="tel" id="regPhone" required />
+                        </div>
+                    </div>
+
+                    <div class="field-group">
+                        <label for="regEmail">Correo electrónico</label>
+                        <input type="email" id="regEmail" required />
+                    </div>
+
+                    <div class="fields-two-col">
+                        <div class="field-group">
+                            <label for="regPass">Contraseña (mín. 6)</label>
+                            <div class="pass-box">
+                                <input type="password" id="regPass" minlength="6" required />
+                                <button type="button" class="eye-btn" data-target="regPass"
+                                    aria-label="Mostrar u ocultar contraseña">
+                                    <svg class="eye-open" viewBox="0 0 24 24">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                    <svg class="eye-closed" viewBox="0 0 24 24">
+                                        <path
+                                            d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a21.77 21.77 0 0 1 5.06-5.94">
+                                        </path>
+                                        <path
+                                            d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19">
+                                        </path>
+                                        <line x1="1" y1="1" x2="23" y2="23"></line>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="field-group">
+                            <label for="regPassConfirm">Confirmar contraseña</label>
+                            <div class="pass-box">
+                                <input type="password" id="regPassConfirm" minlength="6" required />
+                                <button type="button" class="eye-btn" data-target="regPassConfirm"
+                                    aria-label="Mostrar u ocultar contraseña">
+                                    <svg class="eye-open" viewBox="0 0 24 24">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                    <svg class="eye-closed" viewBox="0 0 24 24">
+                                        <path
+                                            d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a21.77 21.77 0 0 1 5.06-5.94">
+                                        </path>
+                                        <path
+                                            d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19">
+                                        </path>
+                                        <line x1="1" y1="1" x2="23" y2="23"></line>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-options">
+                        <label class="check-wrap">
+                            <input type="checkbox" id="acceptPolicy" required />
+                            <span>Acepto el tratamiento de datos para contacto de seguimiento</span>
+                        </label>
+                    </div>
+
+                    <div class="submit-row">
+                        <button type="submit" class="btn-submit">Registrar cuenta</button>
+                        <p class="switch-hint">
+                            ¿Ya tienes cuenta?
+                            <button type="button" class="action-link" id="backFromRegBtn">Iniciar sesión</button>
+                        </p>
+                    </div>
+                </form>
+
+                <!-- RESTAURAR CONTRASEÑA -->
+                <form id="recoverForm" class="auth-form">
+                    <div class="field-group">
+                        <label for="recoverEmail">Correo electrónico registrado</label>
+                        <input type="email" id="recoverEmail" required />
+                    </div>
+
+                    <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 1.35rem;">
+                        Te enviaremos un enlace para restablecer tu contraseña.
+                    </p>
+
+                    <div class="submit-row">
+                        <button type="submit" class="btn-submit">Enviar enlace</button>
+                        <button type="button" class="action-link" id="backFromRecoverBtn">← Volver a iniciar
+                            sesión</button>
+                    </div>
+                </form>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        (function () {
+            const toggleBtn = document.getElementById('themeToggleBtn');
+            const themeIcon = document.getElementById('themeIcon');
+            const themeLabel = document.getElementById('themeLabel');
+
+            function syncThemeUI(theme) {
+                if (theme === 'light') {
+                    document.documentElement.setAttribute('data-theme', 'light');
+                    themeIcon.textContent = '🌙';
+                    themeLabel.textContent = 'Modo oscuro';
+                } else {
+                    document.documentElement.removeAttribute('data-theme');
+                    themeIcon.textContent = '☀️';
+                    themeLabel.textContent = 'Modo claro';
+                }
+            }
+
+            syncThemeUI(localStorage.getItem('auraterra-theme') || 'dark');
+
+            toggleBtn.addEventListener('click', function () {
+                const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+                const nextTheme = isLight ? 'dark' : 'light';
+                localStorage.setItem('auraterra-theme', nextTheme);
+                syncThemeUI(nextTheme);
+            });
+
+            const authTabs = document.getElementById('authTabs');
+            const tabButtons = document.querySelectorAll('.auth-tab');
+            const forms = document.querySelectorAll('.auth-form');
+            const feedbackBox = document.getElementById('feedbackBox');
+            const panelTitle = document.getElementById('panelTitle');
+            const panelSubtitle = document.getElementById('panelSubtitle');
+
+            function clearFeedback() {
+                feedbackBox.className = 'feedback-box';
+                feedbackBox.textContent = '';
+            }
+
+            function showFeedback(type, text) {
+                feedbackBox.className = 'feedback-box ' + type;
+                feedbackBox.textContent = text;
+            }
+
+            function setMode(formId) {
+                clearFeedback();
+                forms.forEach(f => f.classList.toggle('active', f.id === formId));
+
+                if (formId === 'recoverForm') {
+                    authTabs.style.display = 'none';
+                    panelTitle.textContent = 'Restaurar contraseña';
+                    panelSubtitle.textContent = 'Ingresa tu correo registrado para recibir instrucciones';
+                } else {
+                    authTabs.style.display = '';
+                    tabButtons.forEach(b => b.classList.toggle('active', b.dataset.target === formId));
+                    if (formId === 'registerForm') {
+                        panelTitle.textContent = 'Crear cuenta';
+                        panelSubtitle.textContent = 'Completa tus datos para registrarte en el portal';
+                    } else {
+                        panelTitle.textContent = 'Iniciar sesión';
+                        panelSubtitle.textContent = 'Accede para gestionar y dar seguimiento a tus reportes';
+                    }
+                }
+            }
+
+            tabButtons.forEach(btn => {
+                btn.addEventListener('click', () => setMode(btn.dataset.target));
+            });
+
+            document.getElementById('openRecoverBtn').addEventListener('click', () => setMode('recoverForm'));
+            document.getElementById('openRegisterBtn').addEventListener('click', () => setMode('registerForm'));
+            document.getElementById('backFromRegBtn').addEventListener('click', () => setMode('loginForm'));
+            document.getElementById('backFromRecoverBtn').addEventListener('click', () => setMode('loginForm'));
+
+            // Abrir directamente en pestaña Crear cuenta si viene ?tab=register
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('tab') === 'register') {
+                setMode('registerForm');
+            }
+
+            document.querySelectorAll('.eye-btn').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const input = document.getElementById(this.dataset.target);
+                    if (!input) return;
+                    const show = input.type === 'password';
+                    input.type = show ? 'text' : 'password';
+                    this.classList.toggle('showing', show);
+                });
+            });
+
+            function getUsers() {
+                try {
+                    return JSON.parse(localStorage.getItem('auraterra-citizen-users')) || [];
+                } catch (e) {
+                    return [];
+                }
+            }
+
+            function saveUsers(users) {
+                localStorage.setItem('auraterra-citizen-users', JSON.stringify(users));
+            }
+
+            // INICIAR SESIÓN -> valida credenciales y manda directo a /ciudadano/inicio
+            document.getElementById('loginForm').addEventListener('submit', function (e) {
+                e.preventDefault();
+                const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+                const password = document.getElementById('loginPassword').value;
+
+                const users = getUsers();
+                const found = users.find(u => u.email.toLowerCase() === email);
+
+                if (found && found.password !== password) {
+                    showFeedback('error', 'Contraseña incorrecta para este correo.');
+                    return;
+                }
+
+                const sessionUser = found
+                    ? { name: found.name, phone: found.phone, email: found.email }
+                    : { name: email.split('@')[0], phone: '', email: email };
+
+                localStorage.setItem('auraterra-citizen-user', JSON.stringify(sessionUser));
+                window.location.href = '/ciudadano/inicio?usuarioEmail=' + encodeURIComponent(sessionUser.email) + '#mis-reportes';
+            });
+
+            // CREAR CUENTA -> registra el usuario y lo manda a /ciudadano/inicio con sesión activa
+            document.getElementById('registerForm').addEventListener('submit', function (e) {
+                e.preventDefault();
+                const name = document.getElementById('regName').value.trim();
+                const phone = document.getElementById('regPhone').value.trim();
+                const email = document.getElementById('regEmail').value.trim();
+                const pass = document.getElementById('regPass').value;
+                const confirm = document.getElementById('regPassConfirm').value;
+
+                if (pass !== confirm) {
+                    showFeedback('error', 'Las contraseñas no coinciden.');
+                    return;
+                }
+
+                const users = getUsers();
+                const exists = users.some(u => u.email.toLowerCase() === email.toLowerCase());
+                if (exists) {
+                    showFeedback('error', 'Ese correo ya está registrado. Inicia sesión con tus credenciales.');
+                    return;
+                }
+
+                users.push({ name, phone, email, password: pass });
+                saveUsers(users);
+
+                const sessionUser = { name, phone, email };
+                localStorage.setItem('auraterra-citizen-user', JSON.stringify(sessionUser));
+
+                showFeedback('success', 'Cuenta registrada correctamente. Redirigiendo al portal...');
+                setTimeout(function () {
+                    window.location.href = '/ciudadano/inicio?usuarioEmail=' + encodeURIComponent(email) + '#mis-reportes';
+                }, 450);
+            });
+
+            document.getElementById('recoverForm').addEventListener('submit', function (e) {
+                e.preventDefault();
+                const email = document.getElementById('recoverEmail').value.trim();
+                showFeedback('success', 'Se enviaron instrucciones de recuperación a ' + email + '.');
+            });
+        })();
+    </script>
+</body>
+
+</html>

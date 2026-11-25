@@ -1,0 +1,1760 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AuraTerra - Portal Ciudadano</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #070d0c;
+            --bg-card: #0e1917;
+            --bg-input: #12211e;
+            --border-color: rgba(129, 140, 248, 0.18);
+            --border-soft: rgba(255, 255, 255, 0.08);
+            --border-focus: #6366f1;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --text-dim: #64748b;
+
+            --accent: #10b981;
+            --accent-hover: #059669;
+            --accent-text-on-accent: #04120e;
+            --accent-glow: rgba(16, 185, 129, 0.16);
+
+            --indigo-accent: #6366f1;
+            --indigo-hover: #4f46e5;
+            --indigo-soft-bg: rgba(99, 102, 241, 0.16);
+            --indigo-soft-border: rgba(129, 140, 248, 0.34);
+            --indigo-soft-text: #c7d2fe;
+
+            --blue-deep-bg: rgba(14, 165, 233, 0.12);
+            --blue-deep-border: rgba(56, 189, 248, 0.28);
+            --blue-deep-text: #7dd3fc;
+
+            --purple-dark-bg: rgba(109, 40, 217, 0.25);
+            --purple-dark-border: rgba(167, 139, 250, 0.38);
+            --purple-dark-text: #ddd6fe;
+
+            --danger-bg: rgba(239, 68, 68, 0.14);
+            --danger-border: rgba(248, 113, 113, 0.34);
+            --danger-text: #fca5a5;
+
+            /* Transparente con desenfoque (Modo Oscuro) */
+            --glass-bg: rgba(13, 21, 20, 0.52);
+            --glass-bg-hover: rgba(18, 29, 28, 0.68);
+            --glass-nav-bg: rgba(8, 14, 13, 0.48);
+            --glass-icon-bg: rgba(129, 140, 248, 0.12);
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --glass-border-subtle: rgba(255, 255, 255, 0.08);
+            --glass-border-hover: rgba(129, 140, 248, 0.34);
+            --glass-shadow: 0 16px 38px rgba(0, 0, 0, 0.36);
+
+            /* Imagen referente de fondo para el bloque del título / hero */
+            --hero-bg-image: url("https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1600&q=80");
+            --hero-overlay: linear-gradient(120deg, rgba(7, 13, 12, 0.90) 0%, rgba(15, 23, 42, 0.80) 55%, rgba(16, 185, 129, 0.22) 100%);
+
+            --card-bg: linear-gradient(160deg, rgba(16, 26, 25, 0.96) 0%, rgba(10, 17, 16, 0.99) 100%);
+            --card-shadow: 0 20px 46px rgba(0, 0, 0, 0.44);
+            --input-border: rgba(51, 65, 85, 0.85);
+            --input-focus-bg: #162423;
+            --item-surface: rgba(12, 21, 20, 0.74);
+            --item-hover: rgba(99, 102, 241, 0.07);
+        }
+
+        [data-theme="light"] {
+            --bg-main: #f2f5f9;
+            --bg-card: #ffffff;
+            --bg-input: #f8fafc;
+            --border-color: rgba(79, 70, 229, 0.16);
+            --border-soft: rgba(15, 23, 42, 0.08);
+            --border-focus: #4f46e5;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --text-dim: #64748b;
+
+            --accent: #059669;
+            --accent-hover: #047857;
+            --accent-text-on-accent: #ffffff;
+            --accent-glow: rgba(5, 150, 105, 0.14);
+
+            --indigo-accent: #4f46e5;
+            --indigo-hover: #4338ca;
+            --indigo-soft-bg: rgba(79, 70, 229, 0.11);
+            --indigo-soft-border: rgba(79, 70, 229, 0.26);
+            --indigo-soft-text: #3730a3;
+
+            --blue-deep-bg: rgba(2, 132, 199, 0.1);
+            --blue-deep-border: rgba(2, 132, 199, 0.24);
+            --blue-deep-text: #0369a1;
+
+            --purple-dark-bg: rgba(91, 33, 182, 0.12);
+            --purple-dark-border: rgba(91, 33, 182, 0.28);
+            --purple-dark-text: #4c1d95;
+
+            --danger-bg: rgba(220, 38, 38, 0.1);
+            --danger-border: rgba(220, 38, 38, 0.25);
+            --danger-text: #b91c1c;
+
+            /* Transparente con desenfoque (Modo Claro) */
+            --glass-bg: rgba(255, 255, 255, 0.68);
+            --glass-bg-hover: rgba(255, 255, 255, 0.84);
+            --glass-nav-bg: rgba(241, 245, 249, 0.72);
+            --glass-icon-bg: rgba(79, 70, 229, 0.09);
+            --glass-border: rgba(15, 23, 42, 0.11);
+            --glass-border-subtle: rgba(15, 23, 42, 0.07);
+            --glass-border-hover: rgba(79, 70, 229, 0.28);
+            --glass-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+
+            --hero-overlay: linear-gradient(120deg, rgba(255, 255, 255, 0.92) 0%, rgba(248, 250, 252, 0.85) 58%, rgba(99, 102, 241, 0.16) 100%);
+
+            --card-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.99) 100%);
+            --card-shadow: 0 14px 34px rgba(15, 23, 42, 0.08);
+            --input-border: #cbd5e1;
+            --input-focus-bg: #ffffff;
+            --item-surface: rgba(248, 250, 252, 0.92);
+            --item-hover: rgba(79, 70, 229, 0.045);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 1.5rem 1.5rem 4.5rem;
+            transition: background-color 0.22s ease, color 0.22s ease;
+        }
+
+        .container {
+            max-width: 1220px;
+            margin: 0 auto;
+        }
+
+        /* Header transparente con desenfoque */
+        header {
+            position: sticky;
+            top: 0.75rem;
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.65rem;
+            padding: 1.15rem 1.6rem;
+            border-radius: 20px;
+            background-color: var(--glass-bg);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+            transition: background-color 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.95rem;
+        }
+
+        .brand-icon {
+            background-color: var(--glass-icon-bg);
+            border: 1px solid var(--indigo-soft-border);
+            border-radius: 14px;
+            width: 46px;
+            height: 46px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+        }
+
+        .brand-title-row {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+        }
+
+        .brand h1 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+        }
+
+        .env-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.36rem;
+            padding: 0.22rem 0.68rem;
+            border-radius: 999px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--indigo-soft-text);
+            background-color: var(--indigo-soft-bg);
+            border: 1px solid var(--indigo-soft-border);
+        }
+
+        .env-pill::before {
+            content: "";
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: var(--indigo-accent);
+        }
+
+        .brand p {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-top: 0.12rem;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+        }
+
+        .citizen-nav {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            flex-wrap: wrap;
+            background-color: var(--glass-nav-bg);
+            padding: 0.32rem;
+            border-radius: 13px;
+            border: 1px solid var(--glass-border-subtle);
+            backdrop-filter: blur(14px);
+        }
+
+        .citizen-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.79rem;
+            font-weight: 600;
+            padding: 0.48rem 0.82rem;
+            border-radius: 10px;
+            transition: all 0.18s ease;
+            white-space: nowrap;
+        }
+
+        .citizen-link:hover {
+            color: var(--text-main);
+            background-color: var(--glass-icon-bg);
+        }
+
+        .auth-group {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+        }
+
+        .login-btn {
+            background: linear-gradient(135deg, var(--indigo-accent) 0%, #7c3aed 100%);
+            color: #ffffff;
+            text-decoration: none;
+            border: none;
+            border-radius: 12px;
+            padding: 0.56rem 0.95rem;
+            font-size: 0.79rem;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.42rem;
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.28);
+            transition: all 0.18s ease;
+            white-space: nowrap;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(99, 102, 241, 0.38);
+        }
+
+        .logout-chip {
+            display: none;
+            background-color: var(--danger-bg);
+            border: 1px solid var(--danger-border);
+            color: var(--danger-text);
+            border-radius: 11px;
+            padding: 0.52rem 0.78rem;
+            font-size: 0.76rem;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all 0.18s ease;
+        }
+
+        .logout-chip.visible {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .theme-btn {
+            background-color: var(--glass-nav-bg);
+            color: var(--text-main);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 0.56rem 0.9rem;
+            font-size: 0.79rem;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.42rem;
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .theme-btn:hover {
+            background-color: var(--glass-bg-hover);
+            border-color: var(--glass-border-hover);
+            transform: translateY(-1px);
+        }
+
+        /* Bloque superior con imagen referente de fondo */
+        .overview-card {
+            position: relative;
+            overflow: hidden;
+            background-image: var(--hero-overlay), var(--hero-bg-image);
+            background-size: cover;
+            background-position: center;
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--indigo-accent);
+            border-radius: 24px;
+            padding: 2rem 2.1rem;
+            margin-bottom: 1.65rem;
+            box-shadow: var(--card-shadow);
+        }
+
+        .overview-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            padding-bottom: 1.45rem;
+            margin-bottom: 1.45rem;
+            border-bottom: 1px solid var(--border-soft);
+        }
+
+        .overview-intro {
+            max-width: 710px;
+        }
+
+        .overview-kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.26rem 0.72rem;
+            border-radius: 999px;
+            font-size: 0.71rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--indigo-soft-text);
+            background-color: var(--indigo-soft-bg);
+            border: 1px solid var(--indigo-soft-border);
+            margin-bottom: 0.65rem;
+        }
+
+        .overview-title {
+            font-size: 1.55rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+            margin-bottom: 0.5rem;
+            line-height: 1.22;
+        }
+
+        .overview-desc {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.58;
+        }
+
+        .overview-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.65rem;
+            margin-top: 1.15rem;
+        }
+
+        .btn-ghost-modern {
+            text-decoration: none;
+            color: var(--text-main);
+            background-color: var(--glass-bg);
+            backdrop-filter: blur(14px);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 0.62rem 1.05rem;
+            font-size: 0.82rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            transition: all 0.18s ease;
+        }
+
+        .btn-ghost-modern:hover {
+            background-color: var(--glass-bg-hover);
+            border-color: var(--glass-border-hover);
+            transform: translateY(-1px);
+        }
+
+        .overview-metrics {
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+        }
+
+        .metric-pill-box {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            padding: 0.85rem 1.15rem;
+            border-radius: 16px;
+            background-color: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            min-width: 210px;
+        }
+
+        .metric-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.05rem;
+            background-color: var(--indigo-soft-bg);
+            border: 1px solid var(--indigo-soft-border);
+            color: var(--indigo-soft-text);
+            flex-shrink: 0;
+        }
+
+        .metric-icon.emerald {
+            background-color: rgba(16, 185, 129, 0.16);
+            border-color: rgba(52, 211, 153, 0.34);
+            color: #34d399;
+        }
+
+        [data-theme="light"] .metric-icon.emerald {
+            color: #047857;
+        }
+
+        .metric-pill-box strong {
+            display: block;
+            font-size: 1rem;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .metric-pill-box span {
+            display: block;
+            font-size: 0.69rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-muted);
+            margin-top: 0.18rem;
+        }
+
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 1rem;
+        }
+
+        @media (max-width: 860px) {
+            .tips-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .tip-box {
+            background-color: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 1.05rem 1.2rem;
+        }
+
+        .tip-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.86rem;
+            font-weight: 700;
+            margin-bottom: 0.38rem;
+        }
+
+        .tip-box p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            line-height: 1.48;
+        }
+
+        .alert-banner {
+            margin-bottom: 1.5rem;
+            padding: 0.95rem 1.25rem;
+            border-radius: 14px;
+            font-size: 0.86rem;
+            font-weight: 600;
+            background-color: var(--indigo-soft-bg);
+            border: 1px solid var(--indigo-soft-border);
+            color: var(--text-main);
+        }
+
+        /* Zona principal en 2 columnas equilibradas */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1.15fr 0.85fr;
+            gap: 1.65rem;
+            align-items: stretch;
+        }
+
+        @media (max-width: 960px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 22px;
+            padding: 1.8rem 2rem;
+            box-shadow: var(--card-shadow);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-header {
+            padding-bottom: 1rem;
+            margin-bottom: 1.4rem;
+            border-bottom: 1px solid var(--border-soft);
+        }
+
+        .card-title {
+            font-size: 1.14rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+        }
+
+        .title-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background-color: var(--indigo-accent);
+            box-shadow: 0 0 10px rgba(99, 102, 241, 0.45);
+        }
+
+        .title-dot.emerald {
+            background-color: var(--accent);
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        .card-subtitle {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1.1rem 1.2rem;
+            margin-bottom: 1.15rem;
+        }
+
+        @media (max-width: 600px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-group {
+            margin-bottom: 1.05rem;
+        }
+
+        .form-grid .form-group {
+            margin-bottom: 0;
+        }
+
+        label {
+            display: block;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 0.45rem;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            background-color: var(--bg-input);
+            border: 1px solid var(--input-border);
+            border-radius: 12px;
+            padding: 0.76rem 1rem;
+            color: var(--text-main);
+            font-size: 0.88rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s ease;
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+            color: var(--text-dim);
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.18);
+            background-color: var(--input-focus-bg);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 98px;
+            line-height: 1.5;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--indigo-accent) 0%, #7c3aed 100%);
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 600;
+            border: none;
+            border-radius: 12px;
+            padding: 0.82rem 1.6rem;
+            cursor: pointer;
+            font-size: 0.88rem;
+            font-family: 'Inter', sans-serif;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.3);
+            transition: all 0.2s ease;
+            align-self: flex-start;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--indigo-hover) 0%, #6d28d9 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4);
+        }
+
+        /* Filtros y paginación en Casos en Seguimiento */
+        .filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            margin-bottom: 1.15rem;
+        }
+
+        .filter-bar input {
+            flex: 1;
+            min-width: 155px;
+            padding: 0.62rem 0.85rem;
+            font-size: 0.82rem;
+        }
+
+        .filter-bar select {
+            width: auto;
+            min-width: 155px;
+            padding: 0.62rem 0.85rem;
+            font-size: 0.82rem;
+        }
+
+        .btn-filter {
+            background: linear-gradient(135deg, var(--indigo-accent) 0%, #7c3aed 100%);
+            color: #ffffff;
+            border: none;
+            border-radius: 11px;
+            padding: 0.62rem 1rem;
+            font-size: 0.82rem;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all 0.18s ease;
+        }
+
+        .btn-filter:hover {
+            filter: brightness(1.08);
+        }
+
+        .report-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.9rem;
+        }
+
+        .report-item {
+            background-color: var(--item-surface);
+            border: 1px solid var(--border-soft);
+            border-left: 3px solid var(--indigo-accent);
+            border-radius: 15px;
+            padding: 1rem 1.15rem;
+            transition: background-color 0.16s ease, border-color 0.16s ease, transform 0.16s ease;
+        }
+
+        .report-item:hover {
+            background-color: var(--item-hover);
+            border-color: var(--glass-border-hover);
+            transform: translateY(-1px);
+        }
+
+        .report-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+            margin-bottom: 0.45rem;
+            flex-wrap: wrap;
+        }
+
+        .id-chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.24rem 0.66rem;
+            border-radius: 8px;
+            font-size: 0.74rem;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+            background-color: var(--purple-dark-bg);
+            border: 1px solid var(--purple-dark-border);
+            color: var(--purple-dark-text);
+        }
+
+        .badge-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.38rem;
+            padding: 0.26rem 0.74rem;
+            border-radius: 999px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            background-color: var(--blue-deep-bg);
+            color: var(--blue-deep-text);
+            border: 1px solid var(--blue-deep-border);
+        }
+
+        .report-title {
+            font-size: 0.92rem;
+            font-weight: 600;
+            margin-bottom: 0.24rem;
+        }
+
+        .report-meta {
+            font-size: 0.79rem;
+            color: var(--text-muted);
+            line-height: 1.45;
+        }
+
+        .empty-state {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            text-align: center;
+            padding: 2.2rem 1.25rem;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            border: 1px dashed var(--border-color);
+            border-radius: 15px;
+            background-color: var(--item-surface);
+        }
+
+        .pagination-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            margin-top: auto;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-soft);
+            font-size: 0.8rem;
+        }
+
+        .page-btn {
+            text-decoration: none;
+            color: var(--text-main);
+            font-weight: 600;
+            padding: 0.45rem 0.85rem;
+            border-radius: 10px;
+            background-color: var(--bg-input);
+            border: 1px solid var(--input-border);
+            transition: all 0.18s ease;
+        }
+
+        .page-btn:hover {
+            border-color: var(--border-focus);
+        }
+
+        .page-btn.disabled {
+            opacity: 0.42;
+            pointer-events: none;
+        }
+
+        .page-info {
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        /* Sección Mis Reportes con toque verdecito */
+        .my-reports-section {
+            margin-top: 1.75rem;
+            background: linear-gradient(165deg, rgba(14, 30, 26, 0.96) 0%, rgba(9, 17, 16, 0.99) 100%);
+            border: 1px solid rgba(16, 185, 129, 0.24);
+            border-radius: 22px;
+            padding: 1.8rem 2rem;
+            box-shadow: var(--card-shadow);
+        }
+
+        [data-theme="light"] .my-reports-section {
+            background: linear-gradient(180deg, rgba(244, 251, 248, 0.99) 0%, rgba(255, 255, 255, 0.99) 100%);
+            border-color: rgba(5, 150, 105, 0.22);
+        }
+
+        .my-reports-section .title-dot {
+            background-color: var(--accent);
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        .my-reports-section .report-item {
+            border-left-color: var(--accent);
+            background-color: rgba(16, 185, 129, 0.05);
+        }
+
+        .my-reports-section .report-item:hover {
+            border-color: rgba(52, 211, 153, 0.34);
+            background-color: rgba(16, 185, 129, 0.09);
+        }
+
+        .my-reports-section .id-chip {
+            background-color: rgba(16, 185, 129, 0.16);
+            border-color: rgba(52, 211, 153, 0.36);
+            color: #6ee7b7;
+        }
+
+        [data-theme="light"] .my-reports-section .id-chip {
+            color: #047857;
+        }
+
+        .my-reports-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 1.15rem;
+        }
+
+        .my-reports-search {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            flex: 1;
+            max-width: 560px;
+        }
+
+        .my-reports-search input {
+            flex: 1;
+            min-width: 210px;
+            padding: 0.66rem 0.95rem;
+            font-size: 0.84rem;
+        }
+
+        .saved-chips {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .saved-chip-btn {
+            background-color: rgba(16, 185, 129, 0.13);
+            border: 1px solid rgba(52, 211, 153, 0.32);
+            color: #6ee7b7;
+            border-radius: 999px;
+            padding: 0.34rem 0.85rem;
+            font-size: 0.76rem;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all 0.18s ease;
+        }
+
+        .saved-chip-btn:hover {
+            background-color: rgba(16, 185, 129, 0.22);
+            border-color: rgba(52, 211, 153, 0.5);
+        }
+
+        [data-theme="light"] .saved-chip-btn {
+            color: #047857;
+        }
+
+        .my-reports-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+            gap: 0.9rem;
+        }
+
+        /* Canales de atención, urgencias y pie de página */
+        .emergency-section {
+            margin-top: 1.75rem;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 22px;
+            padding: 1.8rem 2rem;
+            box-shadow: var(--card-shadow);
+        }
+
+        .emergency-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 1rem;
+            margin-top: 1.1rem;
+        }
+
+        @media (max-width: 900px) {
+            .emergency-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .emergency-card {
+            background-color: var(--item-surface);
+            border: 1px solid var(--border-soft);
+            border-radius: 16px;
+            padding: 1.1rem 1.2rem;
+        }
+
+        .emergency-card.urgent {
+            border-color: var(--danger-border);
+            background: linear-gradient(160deg, var(--danger-bg) 0%, var(--item-surface) 100%);
+        }
+
+        .emergency-badge {
+            display: inline-block;
+            font-size: 0.68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            padding: 0.22rem 0.65rem;
+            border-radius: 999px;
+            margin-bottom: 0.6rem;
+            background-color: var(--purple-dark-bg);
+            border: 1px solid var(--purple-dark-border);
+            color: var(--purple-dark-text);
+        }
+
+        .emergency-card.urgent .emergency-badge {
+            background-color: var(--danger-bg);
+            border-color: var(--danger-border);
+            color: var(--danger-text);
+        }
+
+        .emergency-title {
+            font-size: 0.94rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+        }
+
+        .emergency-value {
+            font-size: 0.86rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 0.38rem;
+        }
+
+        .emergency-card p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            line-height: 1.48;
+        }
+
+        .site-footer {
+            margin-top: 1.65rem;
+            padding: 1.25rem 1.6rem;
+            border-radius: 20px;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.14) 0%, rgba(13, 28, 24, 0.72) 100%);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(52, 211, 153, 0.24);
+            box-shadow: var(--glass-shadow);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        [data-theme="light"] .site-footer {
+            background: linear-gradient(135deg, rgba(209, 250, 229, 0.78) 0%, rgba(236, 253, 245, 0.88) 100%);
+            border: 1px solid rgba(5, 150, 105, 0.22);
+        }
+
+        .footer-brand {
+            font-size: 0.88rem;
+            font-weight: 700;
+        }
+
+        .footer-copy {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-top: 0.18rem;
+        }
+
+        .footer-links {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            transition: color 0.18s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent);
+        }
+
+        /* Chatbot flotante verde con hojita */
+        .chatbot-fab {
+            position: fixed;
+            right: 1.5rem;
+            bottom: 1.5rem;
+            z-index: 90;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: #ffffff;
+            border: 1px solid rgba(110, 231, 183, 0.38);
+            border-radius: 999px;
+            padding: 0.82rem 1.18rem;
+            font-size: 0.84rem;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 12px 28px rgba(16, 185, 129, 0.38);
+            transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+        }
+
+        .chatbot-fab:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.05);
+            box-shadow: 0 14px 32px rgba(16, 185, 129, 0.48);
+        }
+
+        .chatbot-panel {
+            position: fixed;
+            right: 1.5rem;
+            bottom: 5.1rem;
+            z-index: 95;
+            width: min(370px, calc(100vw - 2rem));
+            background: var(--card-bg);
+            border: 1px solid rgba(52, 211, 153, 0.34);
+            border-radius: 22px;
+            box-shadow: 0 24px 54px rgba(0, 0, 0, 0.52);
+            overflow: hidden;
+            display: none;
+            flex-direction: column;
+        }
+
+        .chatbot-panel.open {
+            display: flex;
+        }
+
+        .chatbot-head {
+            padding: 0.95rem 1.15rem;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.22) 0%, rgba(5, 150, 105, 0.18) 100%);
+            border-bottom: 1px solid var(--border-soft);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+        }
+
+        .chatbot-head-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+
+        .chatbot-head-sub {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+        }
+
+        .chatbot-close {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            cursor: pointer;
+            padding: 0.2rem 0.4rem;
+        }
+
+        .chatbot-messages {
+            padding: 1rem;
+            max-height: 270px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+            font-size: 0.81rem;
+            line-height: 1.48;
+        }
+
+        .chat-msg {
+            padding: 0.72rem 0.9rem;
+            border-radius: 14px;
+            max-width: 88%;
+        }
+
+        .chat-msg.bot {
+            background-color: var(--item-surface);
+            border: 1px solid var(--border-soft);
+            color: var(--text-main);
+            align-self: flex-start;
+        }
+
+        .chat-msg.user {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: #ffffff;
+            align-self: flex-end;
+        }
+
+        .chatbot-quick {
+            padding: 0.6rem 0.9rem;
+            border-top: 1px solid var(--border-soft);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+        }
+
+        .quick-q-btn {
+            background-color: rgba(16, 185, 129, 0.14);
+            border: 1px solid rgba(52, 211, 153, 0.34);
+            color: #6ee7b7;
+            border-radius: 999px;
+            padding: 0.3rem 0.68rem;
+            font-size: 0.71rem;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+        }
+
+        [data-theme="light"] .quick-q-btn {
+            color: #047857;
+        }
+
+        .chatbot-form {
+            display: flex;
+            gap: 0.45rem;
+            padding: 0.75rem 0.9rem;
+            border-top: 1px solid var(--border-soft);
+        }
+
+        .chatbot-form input {
+            padding: 0.58rem 0.8rem;
+            font-size: 0.8rem;
+        }
+
+        .chatbot-form button {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: #ffffff;
+            border: none;
+            border-radius: 11px;
+            padding: 0 0.9rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+    </style>
+    <script>
+        (function () {
+            const savedTheme = localStorage.getItem('auraterra-theme') || 'dark';
+            if (savedTheme === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+</head>
+
+<body>
+
+    <div class="container">
+        <header id="inicio">
+            <div class="brand">
+                <div class="brand-icon">🌿</div>
+                <div>
+                    <div class="brand-title-row">
+                        <h1>AuraTerra</h1>
+                        <span class="env-pill">Portal Ciudadano</span>
+                    </div>
+                    <p>Participación Comunitaria y Reporte de Fauna Silvestre</p>
+                </div>
+            </div>
+
+            <div class="header-controls">
+                <nav class="citizen-nav" aria-label="Navegación del portal ciudadano">
+                    <a href="#inicio" class="citizen-link">Inicio</a>
+                    <a href="#guia" class="citizen-link">Guía de Rescate</a>
+                    <a href="#reportar" class="citizen-link">Reportar Caso</a>
+                    <a href="#casos" class="citizen-link">Seguimiento</a>
+                    <a href="#mis-reportes" class="citizen-link">Mis Reportes</a>
+                    <a href="#urgencias" class="citizen-link">Urgencias</a>
+                </nav>
+
+                <div class="auth-group">
+                    <a th:href="@{/login}" id="loginLinkBtn" class="login-btn">
+                        <span>👤</span>
+                        <span id="loginBtnLabel">Iniciar sesión</span>
+                    </a>
+                    <button type="button" id="logoutBtn" class="logout-chip" title="Cerrar sesión">
+                        <span>Salir</span>
+                    </button>
+                </div>
+
+                <button type="button" id="themeToggleBtn" class="theme-btn"
+                    aria-label="Cambiar entre modo oscuro y modo claro">
+                    <span id="themeIcon">☀️</span>
+                    <span id="themeLabel">Modo claro</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Bloque superior con imagen referente de fondo -->
+        <section class="overview-card">
+            <div class="overview-top">
+                <div class="overview-intro">
+                    <span class="overview-kicker">✦ Red Ciudadana de Protección</span>
+                    <h2 class="overview-title">¿Encontraste un animal silvestre herido o en situación de riesgo?</h2>
+                    <p class="overview-desc">
+                        Registra el avistamiento de forma rápida y organizada para que nuestro equipo técnico y
+                        veterinario evalúe la prioridad de atención. Mantén una distancia segura y evita manipular el
+                        ejemplar sin orientación previa.
+                    </p>
+                    <div class="overview-actions">
+                        <a href="#reportar" class="btn-primary">
+                            <span>📣</span>
+                            <span>Reportar ahora</span>
+                        </a>
+                        <a th:href="@{/login}" class="btn-ghost-modern">
+                            <span>🪪</span>
+                            <span>Crear cuenta</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="overview-metrics">
+                    <div class="metric-pill-box">
+                        <div class="metric-icon">🐾</div>
+                        <div>
+                            <strong
+                                th:text="${paginaCasos != null ? paginaCasos.totalElements : (animales != null ? #lists.size(animales) : 0)}">0</strong>
+                            <span>Casos Visibles</span>
+                        </div>
+                    </div>
+                    <div class="metric-pill-box">
+                        <div class="metric-icon emerald">⚡</div>
+                        <div>
+                            <strong>Prioridad Clínica</strong>
+                            <span>Heridos o Críticos</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tips-grid" id="guia">
+                <div class="tip-box">
+                    <div class="tip-header">✅ Qué hacer al avistar fauna</div>
+                    <p>Observa a distancia, identifica puntos de referencia claros del lugar y envía el reporte con la
+                        condición visible del animal.</p>
+                </div>
+                <div class="tip-box">
+                    <div class="tip-header">⚠️ Qué evitar siempre</div>
+                    <p>No le suministres alimentos ni líquidos por tu cuenta, no lo retengas innecesariamente y aléjalo
+                        de mascotas o zonas de tráfico.</p>
+                </div>
+                <div class="tip-box">
+                    <div class="tip-header">🧭 Seguimiento responsable</div>
+                    <p>Cada reporte ayuda a coordinar el traslado o valoración clínica según la urgencia y la
+                        disponibilidad operativa.</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="alert-banner" th:if="${mensajeExito != null}" th:text="${mensajeExito}">
+            Reporte enviado correctamente.
+        </div>
+
+        <!-- Zona principal en dos columnas -->
+        <div class="main-layout">
+            <div class="card" id="reportar">
+                <div class="card-header">
+                    <h2 class="card-title"><span class="title-dot"></span>Reportar Avistamiento o Rescate</h2>
+                    <p class="card-subtitle">Completa los datos esenciales para registrar el caso</p>
+                </div>
+
+                <form id="citizenReportForm" th:action="@{/ciudadano/reportar}" method="post">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Nombre o Tipo de Animal</label>
+                            <input type="text" id="reportEspecie" name="especie"
+                                placeholder="Ej. Zarigüeya, búho, perezoso..." required />
+                        </div>
+                        <div class="form-group">
+                            <label>Condición Aparente</label>
+                            <select id="reportEstado" name="estadoSalud" required>
+                                <option value="En observación">En observación</option>
+                                <option value="Herido / Lesionado">Herido / Lesionado</option>
+                                <option value="Crítico">Crítico</option>
+                                <option value="Desorientado / En vía">Desorientado / En vía</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Ubicación o Zona</label>
+                            <input type="text" id="reportUbicacion" name="ubicacion"
+                                placeholder="Ej. Vereda, parque, kilómetro o barrio" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Contacto (Teléfono o Correo)</label>
+                            <input type="text" id="reportContacto" name="contacto"
+                                placeholder="Opcional para seguimiento" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Descripción de lo observado</label>
+                        <textarea name="observaciones"
+                            placeholder="Describe si presenta heridas, dificultad para moverse, riesgo vial o cuánto tiempo lleva allí..."
+                            required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-primary">
+                        <span>📨</span>
+                        <span>Enviar Reporte Ciudadano</span>
+                    </button>
+                </form>
+            </div>
+
+            <div class="card" id="casos">
+                <div class="card-header">
+                    <h2 class="card-title"><span class="title-dot emerald"></span>Casos en Seguimiento</h2>
+                    <p class="card-subtitle">Registros activos compartidos para consulta ciudadana</p>
+                </div>
+
+                <form class="filter-bar" th:action="@{/ciudadano/inicio}" method="get">
+                    <input type="text" name="q" th:value="${busquedaActual}"
+                        placeholder="Buscar especie, nombre o zona..." />
+
+                    <select name="condicion">
+                        <option value="TODOS" th:selected="${condicionActual == null || condicionActual == 'TODOS'}">
+                            Todas las condiciones</option>
+                        <option value="En observación" th:selected="${condicionActual == 'En observación'}">En
+                            observación</option>
+                        <option value="Herido / Lesionado" th:selected="${condicionActual == 'Herido / Lesionado'}">
+                            Herido / Lesionado</option>
+                        <option value="Crítico" th:selected="${condicionActual == 'Crítico'}">Crítico</option>
+                        <option value="Desorientado / En vía"
+                            th:selected="${condicionActual == 'Desorientado / En vía'}">Desorientado / En vía</option>
+                    </select>
+
+                    <button type="submit" class="btn-filter">Filtrar</button>
+                </form>
+
+                <div th:if="${animales == null || #lists.isEmpty(animales)}" class="empty-state">
+                    Aún no hay casos públicos registrados para mostrar con el filtro actual.
+                </div>
+
+                <div class="report-list" th:if="${animales != null && !#lists.isEmpty(animales)}">
+                    <div class="report-item" th:each="a : ${animales}">
+                        <div class="report-top">
+                            <span class="id-chip" th:text="${'#' + a.id}">#1</span>
+                            <span class="badge-status"
+                                th:text="${a.estadoSalud != null && !#strings.isEmpty(a.estadoSalud) ? a.estadoSalud : 'En seguimiento'}">Estado</span>
+                        </div>
+                        <div class="report-title" th:text="${a.nombre + ' · ' + a.especie}">Paciente</div>
+                        <div class="report-meta"
+                            th:text="${!#strings.isEmpty(a.observaciones) ? a.observaciones : 'En proceso de valoración y cuidado.'}">
+                            Observaciones
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pagination-bar" th:if="${paginaCasos != null && paginaCasos.totalPages > 1}">
+                    <a th:href="@{/ciudadano/inicio(page=${paginaCasos.number - 1}, condicion=${condicionActual}, q=${busquedaActual})}"
+                        th:classappend="${!paginaCasos.hasPrevious()} ? ' disabled' : ''" class="page-btn">←
+                        Anterior</a>
+
+                    <span class="page-info"
+                        th:text="${'Página ' + (paginaCasos.number + 1) + ' de ' + paginaCasos.totalPages}">Página 1 de
+                        1</span>
+
+                    <a th:href="@{/ciudadano/inicio(page=${paginaCasos.number + 1}, condicion=${condicionActual}, q=${busquedaActual})}"
+                        th:classappend="${!paginaCasos.hasNext()} ? ' disabled' : ''" class="page-btn">Siguiente →</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mis Reportes con toque verdecito -->
+        <section id="mis-reportes" class="my-reports-section">
+            <div class="card-header" style="margin-bottom: 1.1rem;">
+                <h2 class="card-title"><span class="title-dot"></span>Mis Reportes</h2>
+                <p class="card-subtitle">Consulta rápidamente los casos que has enviado por tu contacto, especie o
+                    palabra clave</p>
+            </div>
+
+            <div class="my-reports-toolbar">
+                <form class="my-reports-search" th:action="@{/ciudadano/inicio#casos}" method="get">
+                    <input type="text" id="myReportsQueryInput" name="q"
+                        placeholder="Escribe tu correo, teléfono o especie reportada..." />
+                    <button type="submit" class="btn-filter">Buscar en servidor</button>
+                </form>
+
+                <div id="savedReportsChips" class="saved-chips"></div>
+            </div>
+
+            <div id="localMyReportsContainer" class="my-reports-grid"></div>
+        </section>
+
+        <!-- Canales de atención y urgencias -->
+        <section id="urgencias" class="emergency-section">
+            <div class="card-header" style="margin-bottom: 0.5rem;">
+                <h2 class="card-title"><span class="title-dot"></span>Canales de Atención y Urgencias</h2>
+                <p class="card-subtitle">Líneas de orientación y coordinación cuando un ejemplar requiere respuesta
+                    rápida</p>
+            </div>
+
+            <div class="emergency-grid">
+                <div class="emergency-card urgent">
+                    <span class="emergency-badge">Urgencia crítica</span>
+                    <div class="emergency-title">Fauna herida o en riesgo vial</div>
+                    <div class="emergency-value">Línea 123 · Emergencias ambientales</div>
+                    <p>Si el animal está en peligro inminente, en vía transitada o con lesión visible, envía el reporte
+                        y mantén distancia segura.</p>
+                </div>
+
+                <div class="emergency-card">
+                    <span class="emergency-badge">Orientación técnica</span>
+                    <div class="emergency-title">Centro de atención y seguimiento</div>
+                    <div class="emergency-value">01-8000-000-000 · atencion@auraterra.org</div>
+                    <p>Consulta información sobre reportes registrados, protocolos de resguardo inicial y coordinación
+                        operativa.</p>
+                </div>
+
+                <div class="emergency-card">
+                    <span class="emergency-badge">Disponibilidad</span>
+                    <div class="emergency-title">Atención y priorización clínica</div>
+                    <div class="emergency-value">Lun–Dom · Prioridad por gravedad</div>
+                    <p>La respuesta en campo y valoración veterinaria se organizan según urgencia, zona y disponibilidad
+                        del equipo.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pie de página con fondo verde delicado -->
+        <footer class="site-footer">
+            <div>
+                <div class="footer-brand">🌿 AuraTerra · Portal Ciudadano</div>
+                <div class="footer-copy">Participación comunitaria para el reporte y seguimiento responsable de fauna
+                    silvestre.</div>
+            </div>
+
+            <div class="footer-links">
+                <a href="#inicio">Inicio</a>
+                <a href="#guia">Guía de Rescate</a>
+                <a href="#reportar">Reportar Caso</a>
+                <a href="#casos">Seguimiento</a>
+                <a href="#mis-reportes">Mis Reportes</a>
+                <a href="#urgencias">Urgencias</a>
+                <a th:href="@{/login}">Iniciar sesión</a>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Chatbot flotante verde con hojita -->
+    <button type="button" id="chatbotFab" class="chatbot-fab" aria-label="Abrir asistente de orientación">
+        <span>🌿</span>
+        <span>Asistente Fauna</span>
+    </button>
+
+    <div id="chatbotPanel" class="chatbot-panel" role="dialog" aria-label="Asistente de orientación AuraTerra">
+        <div class="chatbot-head">
+            <div>
+                <div class="chatbot-head-title">🌿 Asistente AuraTerra</div>
+                <div class="chatbot-head-sub">Orientación rápida para avistamientos y reportes</div>
+            </div>
+            <button type="button" id="chatbotClose" class="chatbot-close" aria-label="Cerrar asistente">✕</button>
+        </div>
+
+        <div id="chatbotMessages" class="chatbot-messages">
+            <div class="chat-msg bot">
+                ¡Hola! Soy el asistente de orientación de AuraTerra. ¿Encontraste un animal herido, quieres saber cómo
+                actuar o necesitas ubicar un reporte?
+            </div>
+        </div>
+
+        <div class="chatbot-quick">
+            <button type="button" class="quick-q-btn" data-question="¿Qué hago si está herido?">Animal herido</button>
+            <button type="button" class="quick-q-btn" data-question="¿Puedo darle agua o comida?">Agua o comida</button>
+            <button type="button" class="quick-q-btn" data-question="¿Cómo veo mis reportes?">Mis reportes</button>
+            <button type="button" class="quick-q-btn" data-question="Números de urgencia">Urgencias</button>
+        </div>
+
+        <form id="chatbotForm" class="chatbot-form">
+            <input type="text" id="chatbotInput" placeholder="Escribe tu duda..." autocomplete="off" />
+            <button type="submit">Enviar</button>
+        </form>
+    </div>
+
+    <script th:inline="javascript">
+        (function () {
+            // 1. Tema Oscuro / Claro sincronizado
+            const toggleBtn = document.getElementById('themeToggleBtn');
+            const themeIcon = document.getElementById('themeIcon');
+            const themeLabel = document.getElementById('themeLabel');
+
+            function syncThemeUI(theme) {
+                if (theme === 'light') {
+                    document.documentElement.setAttribute('data-theme', 'light');
+                    themeIcon.textContent = '🌙';
+                    themeLabel.textContent = 'Modo oscuro';
+                } else {
+                    document.documentElement.removeAttribute('data-theme');
+                    themeIcon.textContent = '☀️';
+                    themeLabel.textContent = 'Modo claro';
+                }
+            }
+
+            const initialTheme = localStorage.getItem('auraterra-theme') || 'dark';
+            syncThemeUI(initialTheme);
+
+            toggleBtn.addEventListener('click', function () {
+                const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+                const nextTheme = isLight ? 'dark' : 'light';
+                localStorage.setItem('auraterra-theme', nextTheme);
+                syncThemeUI(nextTheme);
+            });
+
+            // 2. Sincronizar usuario ciudadano si inició sesión o creó cuenta en /login
+            const loginBtnLabel = document.getElementById('loginBtnLabel');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const reportContacto = document.getElementById('reportContacto');
+            const myReportsQueryInput = document.getElementById('myReportsQueryInput');
+
+            function applySessionUser(user) {
+                if (user && user.name) {
+                    loginBtnLabel.textContent = user.name;
+                    logoutBtn.classList.add('visible');
+                    if (reportContacto && !reportContacto.value && user.email) {
+                        reportContacto.value = user.phone ? (user.email + ' / ' + user.phone) : user.email;
+                    }
+                    if (myReportsQueryInput && !myReportsQueryInput.value && user.email) {
+                        myReportsQueryInput.value = user.email;
+                    }
+                } else {
+                    loginBtnLabel.textContent = 'Iniciar sesión';
+                    logoutBtn.classList.remove('visible');
+                }
+            }
+
+            try {
+                const savedUser = JSON.parse(localStorage.getItem('auraterra-citizen-user'));
+                if (savedUser) applySessionUser(savedUser);
+            } catch (e) { }
+
+            logoutBtn.addEventListener('click', function () {
+                localStorage.removeItem('auraterra-citizen-user');
+                applySessionUser(null);
+            });
+
+            // 3. Historial rápido de "Mis Reportes" en el navegador + búsqueda en servidor
+            const reportForm = document.getElementById('citizenReportForm');
+            const localContainer = document.getElementById('localMyReportsContainer');
+            const savedChips = document.getElementById('savedReportsChips');
+            const ultimoIdServidor = /*[[${ultimoIdReportado}]]*/ null;
+
+            function getMyReports() {
+                try {
+                    return JSON.parse(localStorage.getItem('auraterra-my-reports')) || [];
+                } catch (e) {
+                    return [];
+                }
+            }
+
+            function saveMyReports(list) {
+                localStorage.setItem('auraterra-my-reports', JSON.stringify(list.slice(0, 6)));
+            }
+
+            if (ultimoIdServidor) {
+                const current = getMyReports();
+                if (current.length > 0 && !current[0].id) {
+                    current[0].id = ultimoIdServidor;
+                    saveMyReports(current);
+                }
+            }
+
+            if (reportForm) {
+                reportForm.addEventListener('submit', function () {
+                    const especie = document.getElementById('reportEspecie').value.trim();
+                    const estado = document.getElementById('reportEstado').value;
+                    const ubicacion = document.getElementById('reportUbicacion').value.trim();
+                    const contacto = document.getElementById('reportContacto').value.trim();
+
+                    const current = getMyReports();
+                    current.unshift({
+                        id: null,
+                        especie: especie,
+                        estado: estado,
+                        ubicacion: ubicacion,
+                        contacto: contacto,
+                        fecha: new Date().toLocaleDateString('es-CO')
+                    });
+                    saveMyReports(current);
+                });
+            }
+
+            function renderMyReports() {
+                const reports = getMyReports();
+                if (!reports.length) {
+                    localContainer.innerHTML = '<div class="empty-state" style="grid-column: 1 / -1;">Aún no has enviado reportes desde este navegador. Cuando registres uno, aparecerá aquí para consulta rápida.</div>';
+                    return;
+                }
+
+                savedChips.innerHTML = reports.slice(0, 3).map(function (r) {
+                    const label = (r.id ? '#' + r.id + ' · ' : '') + r.especie;
+                    return '<button type="button" class="saved-chip-btn" data-search="' + r.especie.replace(/"/g, '&quot;') + '">' + label + '</button>';
+                }).join('');
+
+                savedChips.querySelectorAll('.saved-chip-btn').forEach(function (btn) {
+                    btn.addEventListener('click', function () {
+                        myReportsQueryInput.value = btn.getAttribute('data-search');
+                        myReportsQueryInput.form.submit();
+                    });
+                });
+
+                localContainer.innerHTML = reports.map(function (r) {
+                    const badgeId = r.id ? '#' + r.id : 'Enviado';
+                    return (
+                        '<div class="report-item">' +
+                        '<div class="report-top">' +
+                        '<span class="id-chip">' + badgeId + '</span>' +
+                        '<span class="badge-status">' + r.estado + '</span>' +
+                        '</div>' +
+                        '<div class="report-title">' + r.especie + '</div>' +
+                        '<div class="report-meta">Zona: ' + r.ubicacion + ' · Fecha: ' + r.fecha + '</div>' +
+                        '</div>'
+                    );
+                }).join('');
+            }
+
+            renderMyReports();
+
+            // 4. Chatbot de orientación ciudadana
+            const chatFab = document.getElementById('chatbotFab');
+            const chatPanel = document.getElementById('chatbotPanel');
+            const chatClose = document.getElementById('chatbotClose');
+            const chatMessages = document.getElementById('chatbotMessages');
+            const chatForm = document.getElementById('chatbotForm');
+            const chatInput = document.getElementById('chatbotInput');
+
+            function getBotReply(text) {
+                const q = text.toLowerCase();
+                if (q.includes('herid') || q.includes('sangr') || q.includes('fractur') || q.includes('critic')) {
+                    return 'Si está herido o en vía transitada: mantén distancia segura, no lo manipules sin guía y regístralo en "Reportar Caso" marcando "Herido / Lesionado" o "Crítico". Para emergencia inmediata llama a la Línea 123.';
+                }
+                if (q.includes('agua') || q.includes('comid') || q.includes('aliment')) {
+                    return 'No le des agua ni alimentos por tu cuenta: si está en shock o lesionado puede broncoaspirar o empeorar su cuadro clínico.';
+                }
+                if (q.includes('reporte') || q.includes('seguimiento') || q.includes('estado') || q.includes('codigo')) {
+                    return 'Puedes revisar tus envíos en la sección "Mis Reportes" o filtrar por especie/condición en "Casos en Seguimiento".';
+                }
+                if (q.includes('urgenc') || q.includes('telefono') || q.includes('linea') || q.includes('contact')) {
+                    return 'Urgencias ambientales: Línea 123. Orientación técnica AuraTerra: 01-8000-000-000 o atencion@auraterra.org.';
+                }
+                return 'Puedo orientarte sobre qué hacer ante un avistamiento, si darle comida/agua, cómo consultar tus reportes o números de urgencia. ¿Qué necesitas revisar?';
+            }
+
+            function appendMessage(text, sender) {
+                const div = document.createElement('div');
+                div.className = 'chat-msg ' + sender;
+                div.textContent = text;
+                chatMessages.appendChild(div);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+
+            chatFab.addEventListener('click', function () {
+                chatPanel.classList.toggle('open');
+                if (chatPanel.classList.contains('open')) {
+                    chatInput.focus();
+                }
+            });
+
+            chatClose.addEventListener('click', function () {
+                chatPanel.classList.remove('open');
+            });
+
+            document.querySelectorAll('.quick-q-btn').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    const question = btn.getAttribute('data-question');
+                    appendMessage(question, 'user');
+                    setTimeout(function () {
+                        appendMessage(getBotReply(question), 'bot');
+                    }, 220);
+                });
+            });
+
+            chatForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+                const val = chatInput.value.trim();
+                if (!val) return;
+                appendMessage(val, 'user');
+                chatInput.value = '';
+                setTimeout(function () {
+                    appendMessage(getBotReply(val), 'bot');
+                }, 220);
+            });
+        })();
+    </script>
+
+</body>
+
+</html>
