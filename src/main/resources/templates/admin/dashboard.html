@@ -1,0 +1,1470 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AuraTerra - Panel de Administración</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #060c0b;
+            --bg-radial: radial-gradient(circle at 12% 0%, rgba(99, 102, 241, 0.14) 0%, transparent 42%),
+                radial-gradient(circle at 88% 8%, rgba(16, 185, 129, 0.12) 0%, transparent 45%);
+            --bg-card: #0d1816;
+            --bg-input: #11201d;
+            --border-color: rgba(129, 140, 248, 0.18);
+            --border-soft: rgba(255, 255, 255, 0.08);
+            --border-focus: #6366f1;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --text-dim: #64748b;
+
+            --accent: #10b981;
+            --accent-hover: #059669;
+            --accent-soft-bg: rgba(16, 185, 129, 0.14);
+            --accent-soft-border: rgba(52, 211, 153, 0.34);
+            --accent-soft-text: #6ee7b7;
+
+            --indigo-accent: #6366f1;
+            --indigo-hover: #4f46e5;
+            --indigo-soft-bg: rgba(99, 102, 241, 0.16);
+            --indigo-soft-border: rgba(129, 140, 248, 0.34);
+            --indigo-soft-text: #c7d2fe;
+
+            --blue-deep-bg: rgba(14, 165, 233, 0.14);
+            --blue-deep-border: rgba(56, 189, 248, 0.3);
+            --blue-deep-text: #7dd3fc;
+
+            --purple-dark-bg: rgba(109, 40, 217, 0.24);
+            --purple-dark-border: rgba(167, 139, 250, 0.38);
+            --purple-dark-text: #ddd6fe;
+
+            --danger-bg: rgba(239, 68, 68, 0.15);
+            --danger-border: rgba(248, 113, 113, 0.36);
+            --danger-text: #fca5a5;
+
+            --glass-bg: rgba(12, 21, 19, 0.68);
+            --glass-bg-hover: rgba(18, 30, 28, 0.85);
+            --glass-nav-bg: rgba(9, 16, 15, 0.65);
+            --glass-icon-bg: rgba(129, 140, 248, 0.14);
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --glass-border-subtle: rgba(255, 255, 255, 0.08);
+            --glass-border-hover: rgba(129, 140, 248, 0.36);
+            --glass-shadow: 0 18px 42px rgba(0, 0, 0, 0.42);
+
+            --hero-bg: linear-gradient(135deg, rgba(99, 102, 241, 0.14) 0%, rgba(16, 185, 129, 0.10) 55%, rgba(13, 24, 22, 0.92) 100%);
+            --card-bg: linear-gradient(165deg, rgba(16, 28, 26, 0.95) 0%, rgba(10, 18, 17, 0.99) 100%);
+            --card-shadow: 0 22px 48px rgba(0, 0, 0, 0.46);
+            --input-border: rgba(51, 65, 85, 0.85);
+            --input-focus-bg: #152624;
+            --item-surface: rgba(14, 25, 23, 0.72);
+            --item-hover: rgba(99, 102, 241, 0.08);
+            --track-bg: rgba(255, 255, 255, 0.09);
+        }
+
+        [data-theme="light"] {
+            --bg-main: #eef2f7;
+            --bg-radial: radial-gradient(circle at 12% 0%, rgba(79, 70, 229, 0.10) 0%, transparent 45%),
+                radial-gradient(circle at 88% 8%, rgba(5, 150, 105, 0.10) 0%, transparent 45%);
+            --bg-card: #ffffff;
+            --bg-input: #f8fafc;
+            --border-color: rgba(79, 70, 229, 0.15);
+            --border-soft: rgba(15, 23, 42, 0.07);
+            --border-focus: #4f46e5;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --text-dim: #64748b;
+
+            --accent: #059669;
+            --accent-hover: #047857;
+            --accent-soft-bg: rgba(5, 150, 105, 0.11);
+            --accent-soft-border: rgba(5, 150, 105, 0.26);
+            --accent-soft-text: #047857;
+
+            --indigo-accent: #4f46e5;
+            --indigo-hover: #4338ca;
+            --indigo-soft-bg: rgba(79, 70, 229, 0.10);
+            --indigo-soft-border: rgba(79, 70, 229, 0.24);
+            --indigo-soft-text: #3730a3;
+
+            --blue-deep-bg: rgba(2, 132, 199, 0.11);
+            --blue-deep-border: rgba(2, 132, 199, 0.24);
+            --blue-deep-text: #0369a1;
+
+            --purple-dark-bg: rgba(91, 33, 182, 0.11);
+            --purple-dark-border: rgba(91, 33, 182, 0.25);
+            --purple-dark-text: #4c1d95;
+
+            --danger-bg: rgba(220, 38, 38, 0.10);
+            --danger-border: rgba(220, 38, 38, 0.26);
+            --danger-text: #b91c1c;
+
+            --glass-bg: rgba(255, 255, 255, 0.78);
+            --glass-bg-hover: rgba(255, 255, 255, 0.94);
+            --glass-nav-bg: rgba(241, 245, 249, 0.85);
+            --glass-icon-bg: rgba(79, 70, 229, 0.10);
+            --glass-border: rgba(15, 23, 42, 0.10);
+            --glass-border-subtle: rgba(15, 23, 42, 0.06);
+            --glass-border-hover: rgba(79, 70, 229, 0.28);
+            --glass-shadow: 0 14px 34px rgba(15, 23, 42, 0.07);
+
+            --hero-bg: linear-gradient(135deg, rgba(79, 70, 229, 0.09) 0%, rgba(5, 150, 105, 0.08) 55%, rgba(255, 255, 255, 0.96) 100%);
+            --card-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.99) 0%, rgba(248, 250, 252, 0.99) 100%);
+            --card-shadow: 0 16px 36px rgba(15, 23, 42, 0.07);
+            --input-border: #cbd5e1;
+            --input-focus-bg: #ffffff;
+            --item-surface: rgba(248, 250, 252, 0.85);
+            --item-hover: rgba(79, 70, 229, 0.045);
+            --track-bg: rgba(15, 23, 42, 0.08);
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-main);
+            background-image: var(--bg-radial);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 1.5rem 1.5rem 4rem;
+            transition: background-color 0.22s ease, color 0.22s ease;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        header {
+            position: sticky;
+            top: 0.75rem;
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding: 1.05rem 1.5rem;
+            border-radius: 22px;
+            background-color: var(--glass-bg);
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.95rem;
+        }
+
+        .brand-icon {
+            background: linear-gradient(135deg, var(--glass-icon-bg), var(--accent-soft-bg));
+            border: 1px solid var(--indigo-soft-border);
+            border-radius: 15px;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.45rem;
+            flex-shrink: 0;
+        }
+
+        .brand-title-row {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            flex-wrap: wrap;
+        }
+
+        .brand h1 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: -0.035em;
+        }
+
+        .env-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.38rem;
+            padding: 0.24rem 0.72rem;
+            border-radius: 999px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--indigo-soft-text);
+            background-color: var(--indigo-soft-bg);
+            border: 1px solid var(--indigo-soft-border);
+        }
+
+        .env-pill::before {
+            content: "";
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: var(--accent);
+        }
+
+        .brand p {
+            font-size: 0.79rem;
+            color: var(--text-muted);
+            margin-top: 0.14rem;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+        }
+
+        .admin-nav {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            background-color: var(--glass-nav-bg);
+            padding: 0.32rem;
+            border-radius: 14px;
+            border: 1px solid var(--glass-border-subtle);
+        }
+
+        .nav-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 0.5rem 0.88rem;
+            border-radius: 11px;
+            transition: all 0.18s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--text-main);
+        }
+
+        .nav-link.active {
+            color: #ffffff;
+            background: linear-gradient(135deg, var(--indigo-accent), #7c3aed);
+            box-shadow: 0 3px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .theme-btn {
+            background-color: var(--glass-nav-bg);
+            color: var(--text-main);
+            border: 1px solid var(--glass-border);
+            border-radius: 13px;
+            padding: 0.58rem 0.95rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            transition: all 0.18s ease;
+        }
+
+        .theme-btn:hover {
+            background-color: var(--glass-bg-hover);
+            border-color: var(--glass-border-hover);
+        }
+
+        .hero-strip {
+            background: var(--hero-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 22px;
+            padding: 1.35rem 1.65rem;
+            margin-bottom: 1.45rem;
+            box-shadow: var(--card-shadow);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1.25rem;
+        }
+
+        .hero-copy h2 {
+            font-size: 1.08rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-copy p {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            margin-top: 0.22rem;
+        }
+
+        .hero-progress {
+            min-width: 240px;
+            flex: 0 1 320px;
+        }
+
+        .progress-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 0.45rem;
+        }
+
+        .progress-track {
+            height: 8px;
+            border-radius: 999px;
+            background-color: var(--track-bg);
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 999px;
+            background: linear-gradient(90deg, var(--indigo-accent), var(--accent));
+            transition: width 0.35s ease;
+        }
+
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 1.05rem;
+            margin-bottom: 1.55rem;
+        }
+
+        @media (max-width: 980px) {
+            .kpi-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 560px) {
+            .kpi-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .kpi-card {
+            position: relative;
+            overflow: hidden;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 1.25rem 1.4rem;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.18s ease, border-color 0.18s ease;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--glass-border-hover);
+        }
+
+        .kpi-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--indigo-accent), #8b5cf6);
+            opacity: 0.85;
+        }
+
+        .kpi-card.urgent::before {
+            background: linear-gradient(90deg, #ef4444, #f97316);
+        }
+
+        .kpi-card.emerald::before {
+            background: linear-gradient(90deg, var(--accent), #34d399);
+        }
+
+        .kpi-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.55rem;
+        }
+
+        .kpi-label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            color: var(--text-muted);
+        }
+
+        .kpi-badge-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 9px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.88rem;
+            background-color: var(--indigo-soft-bg);
+            color: var(--indigo-soft-text);
+        }
+
+        .kpi-card.urgent .kpi-badge-icon {
+            background-color: var(--danger-bg);
+            color: var(--danger-text);
+        }
+
+        .kpi-card.emerald .kpi-badge-icon {
+            background-color: var(--accent-soft-bg);
+            color: var(--accent-soft-text);
+        }
+
+        .kpi-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .kpi-card.urgent .kpi-value {
+            color: var(--danger-text);
+        }
+
+        .kpi-card.emerald .kpi-value {
+            color: var(--accent-soft-text);
+        }
+
+        .kpi-sub {
+            font-size: 0.77rem;
+            color: var(--text-muted);
+            margin-top: 0.35rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 1.8rem 2rem;
+            box-shadow: var(--card-shadow);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            padding-bottom: 1.1rem;
+            margin-bottom: 1.35rem;
+            border-bottom: 1px solid var(--border-soft);
+        }
+
+        .card-title {
+            font-size: 1.16rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .title-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: var(--accent);
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.55);
+        }
+
+        .card-subtitle {
+            font-size: 0.81rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+            flex-wrap: wrap;
+        }
+
+        .results-pill {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.34rem 0.85rem;
+            border-radius: 999px;
+            font-size: 0.76rem;
+            font-weight: 600;
+            background-color: var(--indigo-soft-bg);
+            border: 1px solid var(--indigo-soft-border);
+            color: var(--indigo-soft-text);
+        }
+
+        .btn-new-case {
+            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+            color: #ffffff;
+            border: none;
+            border-radius: 11px;
+            padding: 0.44rem 0.85rem;
+            font-size: 0.76rem;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            box-shadow: 0 3px 10px rgba(16, 185, 129, 0.25);
+            transition: all 0.16s ease;
+        }
+
+        .btn-new-case:hover {
+            filter: brightness(1.07);
+            transform: translateY(-1px);
+        }
+
+        .btn-print {
+            background-color: var(--glass-nav-bg);
+            color: var(--text-main);
+            border: 1px solid var(--glass-border);
+            border-radius: 11px;
+            padding: 0.44rem 0.85rem;
+            font-size: 0.76rem;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            transition: all 0.16s ease;
+        }
+
+        .btn-print:hover {
+            background-color: var(--glass-bg-hover);
+            border-color: var(--glass-border-hover);
+        }
+
+        .quick-create-panel {
+            display: none;
+            margin-bottom: 1.35rem;
+            padding: 1.15rem 1.25rem;
+            border-radius: 18px;
+            background-color: var(--item-surface);
+            border: 1px solid var(--indigo-soft-border);
+        }
+
+        .quick-create-panel.open {
+            display: block;
+        }
+
+        .quick-create-title {
+            font-size: 0.88rem;
+            font-weight: 700;
+            margin-bottom: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .quick-create-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 0.7rem;
+            margin-bottom: 0.75rem;
+        }
+
+        @media (max-width: 820px) {
+            .quick-create-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 520px) {
+            .quick-create-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .quick-create-footer {
+            display: flex;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .quick-create-footer input {
+            flex: 1;
+            min-width: 220px;
+        }
+
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.7rem;
+            margin-bottom: 1.35rem;
+            padding: 0.85rem;
+            border-radius: 16px;
+            background-color: var(--item-surface);
+            border: 1px solid var(--border-soft);
+        }
+
+        input,
+        select {
+            background-color: var(--bg-input);
+            border: 1px solid var(--input-border);
+            border-radius: 12px;
+            padding: 0.66rem 0.92rem;
+            color: var(--text-main);
+            font-size: 0.84rem;
+            font-family: 'Inter', sans-serif;
+            transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.18);
+            background-color: var(--input-focus-bg);
+        }
+
+        .toolbar input {
+            flex: 1;
+            min-width: 220px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--indigo-accent) 0%, #7c3aed 100%);
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 600;
+            border: none;
+            border-radius: 12px;
+            padding: 0.66rem 1.1rem;
+            cursor: pointer;
+            font-size: 0.82rem;
+            font-family: 'Inter', sans-serif;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.42rem;
+            box-shadow: 0 4px 16px rgba(99, 102, 241, 0.32);
+            transition: all 0.18s ease;
+        }
+
+        .btn-primary:hover {
+            filter: brightness(1.07);
+            transform: translateY(-1px);
+        }
+
+        .btn-urgent-filter {
+            background-color: var(--danger-bg);
+            color: var(--danger-text);
+            border: 1px solid var(--danger-border);
+            border-radius: 12px;
+            padding: 0.66rem 0.95rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            transition: all 0.18s ease;
+        }
+
+        .btn-urgent-filter:hover {
+            filter: brightness(1.08);
+            transform: translateY(-1px);
+        }
+
+        .btn-reset {
+            background-color: var(--bg-input);
+            color: var(--text-muted);
+            border: 1px solid var(--input-border);
+            border-radius: 12px;
+            padding: 0.66rem 0.95rem;
+            text-decoration: none;
+            font-size: 0.81rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.18s ease;
+        }
+
+        .btn-reset:hover {
+            color: var(--text-main);
+            border-color: var(--border-focus);
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 0.55rem;
+            font-size: 0.84rem;
+        }
+
+        th {
+            font-size: 0.71rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            color: var(--text-muted);
+            padding: 0.35rem 0.95rem;
+            text-align: left;
+        }
+
+        tbody tr {
+            background-color: var(--item-surface);
+            transition: background-color 0.16s ease, transform 0.16s ease;
+        }
+
+        tbody tr:hover {
+            background-color: var(--item-hover);
+        }
+
+        td {
+            padding: 0.95rem 0.95rem;
+            border-top: 1px solid var(--border-soft);
+            border-bottom: 1px solid var(--border-soft);
+            vertical-align: middle;
+        }
+
+        td:first-child {
+            border-left: 1px solid var(--border-soft);
+            border-top-left-radius: 15px;
+            border-bottom-left-radius: 15px;
+        }
+
+        td:last-child {
+            border-right: 1px solid var(--border-soft);
+            border-top-right-radius: 15px;
+            border-bottom-right-radius: 15px;
+        }
+
+        .id-chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.28rem 0.68rem;
+            border-radius: 9px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+            background-color: var(--purple-dark-bg);
+            border: 1px solid var(--purple-dark-border);
+            color: var(--purple-dark-text);
+        }
+
+        .case-indicators {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+            margin-top: 0.4rem;
+        }
+
+        .indicator-tag {
+            display: inline-flex;
+            align-items: center;
+            width: fit-content;
+            padding: 0.14rem 0.52rem;
+            border-radius: 999px;
+            font-size: 0.67rem;
+            font-weight: 700;
+        }
+
+        .indicator-pending {
+            background-color: var(--danger-bg);
+            border: 1px solid var(--danger-border);
+            color: var(--danger-text);
+        }
+
+        .indicator-recent {
+            background-color: var(--accent-soft-bg);
+            border: 1px solid var(--accent-soft-border);
+            color: var(--accent-soft-text);
+        }
+
+        .patient-name {
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .patient-species {
+            font-size: 0.76rem;
+            color: var(--text-muted);
+            margin-top: 0.16rem;
+        }
+
+        .notes-pill {
+            display: inline-flex;
+            align-items: center;
+            margin-top: 0.38rem;
+            padding: 0.16rem 0.55rem;
+            border-radius: 999px;
+            font-size: 0.69rem;
+            font-weight: 600;
+            background-color: var(--indigo-soft-bg);
+            border: 1px solid var(--indigo-soft-border);
+            color: var(--indigo-soft-text);
+        }
+
+        .obs-cell {
+            max-width: 360px;
+            color: var(--text-muted);
+            line-height: 1.48;
+        }
+
+        .badge-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.42rem;
+            padding: 0.3rem 0.78rem;
+            border-radius: 999px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            background-color: var(--blue-deep-bg);
+            border: 1px solid var(--blue-deep-border);
+            color: var(--blue-deep-text);
+            white-space: nowrap;
+        }
+
+        .badge-status::before {
+            content: "";
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: currentColor;
+        }
+
+        .badge-status.critico {
+            background-color: var(--danger-bg);
+            border-color: var(--danger-border);
+            color: var(--danger-text);
+        }
+
+        .badge-status.atendido {
+            background-color: var(--accent-soft-bg);
+            border-color: var(--accent-soft-border);
+            color: var(--accent-soft-text);
+        }
+
+        .actions-cell {
+            display: flex;
+            flex-direction: column;
+            gap: 0.48rem;
+        }
+
+        .inline-form {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            flex-wrap: wrap;
+        }
+
+        .inline-form select {
+            padding: 0.46rem 0.7rem;
+            font-size: 0.78rem;
+            border-radius: 10px;
+        }
+
+        .quick-actions {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-sm {
+            padding: 0.46rem 0.8rem;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            transition: filter 0.16s ease, transform 0.16s ease;
+        }
+
+        .btn-sm:hover {
+            filter: brightness(1.07);
+            transform: translateY(-1px);
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+            color: #ffffff;
+            box-shadow: 0 3px 10px rgba(16, 185, 129, 0.25);
+        }
+
+        .btn-quick {
+            background-color: var(--indigo-soft-bg);
+            border: 1px solid var(--indigo-soft-border);
+            color: var(--indigo-soft-text);
+            padding: 0.32rem 0.62rem;
+            font-size: 0.71rem;
+        }
+
+        .btn-edit {
+            background-color: var(--blue-deep-bg);
+            border: 1px solid var(--blue-deep-border);
+            color: var(--blue-deep-text);
+            padding: 0.32rem 0.62rem;
+            font-size: 0.71rem;
+        }
+
+        .btn-delete {
+            background-color: var(--danger-bg);
+            border: 1px solid var(--danger-border);
+            color: var(--danger-text);
+            padding: 0.32rem 0.62rem;
+            font-size: 0.71rem;
+        }
+
+        .alert-banner {
+            margin-bottom: 1.4rem;
+            padding: 0.95rem 1.25rem;
+            border-radius: 16px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            background-color: var(--accent-soft-bg);
+            border: 1px solid var(--accent-soft-border);
+            color: var(--text-main);
+        }
+
+        .empty-row {
+            text-align: center;
+            padding: 2.3rem 1rem;
+            color: var(--text-muted);
+        }
+
+        /* Modal de edición */
+        .modal-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.62);
+            backdrop-filter: blur(6px);
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .modal-backdrop.open {
+            display: flex;
+        }
+
+        .modal-box {
+            width: 100%;
+            max-width: 520px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 22px;
+            padding: 1.5rem 1.65rem;
+            box-shadow: var(--card-shadow);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border-soft);
+        }
+
+        .modal-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+        }
+
+        .modal-close {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .modal-field {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+            margin-bottom: 0.85rem;
+        }
+
+        .modal-field label {
+            font-size: 0.76rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.55rem;
+            margin-top: 1rem;
+        }
+
+        /* Vista limpia para imprimir */
+        @media print {
+            body {
+                background: #ffffff !important;
+                background-image: none !important;
+                color: #0f172a !important;
+                padding: 0 !important;
+            }
+
+            header,
+            .header-controls,
+            .btn-new-case,
+            .btn-print,
+            .quick-create-panel,
+            .toolbar,
+            .actions-cell,
+            .alert-banner,
+            .modal-backdrop {
+                display: none !important;
+            }
+
+            .hero-strip,
+            .kpi-card,
+            .card {
+                background: #ffffff !important;
+                color: #0f172a !important;
+                border: 1px solid #cbd5e1 !important;
+                box-shadow: none !important;
+            }
+
+            th:last-child,
+            td:last-child {
+                display: none !important;
+            }
+
+            tbody tr {
+                background: #ffffff !important;
+                page-break-inside: avoid;
+            }
+
+            td {
+                border-color: #cbd5e1 !important;
+                color: #0f172a !important;
+            }
+        }
+    </style>
+    <script>
+        (function () {
+            const savedTheme = localStorage.getItem('auraterra-theme') || 'dark';
+            if (savedTheme === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="brand">
+                <div class="brand-icon">🌿</div>
+                <div>
+                    <div class="brand-title-row">
+                        <h1>AuraTerra</h1>
+                        <span class="env-pill">Panel Administrativo</span>
+                    </div>
+                    <p>Gestión operativa, priorización clínica y seguimiento de fauna silvestre</p>
+                </div>
+            </div>
+
+            <div class="header-controls">
+                <nav class="admin-nav" aria-label="Navegación administrativa">
+                    <a th:href="@{/admin/dashboard}" class="nav-link active">Dashboard</a>
+                    <a th:href="@{/animales/vista}" class="nav-link">Veterinario</a>
+                    <a th:href="@{/ciudadano/inicio}" class="nav-link">Portal Ciudadano</a>
+                </nav>
+
+                <button type="button" id="themeToggleBtn" class="theme-btn">
+                    <span id="themeIcon">☀️</span>
+                    <span id="themeLabel">Modo claro</span>
+                </button>
+            </div>
+        </header>
+
+        <div class="alert-banner" th:if="${mensajeExito != null}" th:text="${mensajeExito}">
+            Estado actualizado correctamente.
+        </div>
+
+        <section class="hero-strip"
+            th:with="total=${totalCasos != null ? totalCasos : 0}, atendidos=${casosAtendidos != null ? casosAtendidos : 0}, pct=${total > 0 ? (atendidos * 100) / total : 0}">
+            <div class="hero-copy">
+                <h2>Control de casos y respuesta veterinaria</h2>
+                <p>Revisa los reportes ciudadanos entrantes, prioriza lesiones o estados críticos y actualiza el avance
+                    de cada ejemplar.</p>
+            </div>
+            <div class="hero-progress">
+                <div class="progress-meta">
+                    <span>Casos atendidos / estables</span>
+                    <span th:text="${pct + '%'}">0%</span>
+                </div>
+                <div class="progress-track">
+                    <div class="progress-fill" th:style="${'width:' + pct + '%'}"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-top">
+                    <span class="kpi-label">Total de casos</span>
+                    <span class="kpi-badge-icon">📋</span>
+                </div>
+                <div class="kpi-value" th:text="${totalCasos != null ? totalCasos : 0}">0</div>
+                <div class="kpi-sub">Registros en el sistema</div>
+            </div>
+
+            <div class="kpi-card urgent">
+                <div class="kpi-top">
+                    <span class="kpi-label">Críticos o heridos</span>
+                    <span class="kpi-badge-icon">🚨</span>
+                </div>
+                <div class="kpi-value" th:text="${casosCriticos != null ? casosCriticos : 0}">0</div>
+                <div class="kpi-sub">Requieren prioridad clínica</div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-top">
+                    <span class="kpi-label">En observación</span>
+                    <span class="kpi-badge-icon">👁️</span>
+                </div>
+                <div class="kpi-value" th:text="${casosObservacion != null ? casosObservacion : 0}">0</div>
+                <div class="kpi-sub">Monitoreo activo</div>
+            </div>
+
+            <div class="kpi-card emerald">
+                <div class="kpi-top">
+                    <span class="kpi-label">Atendidos / Estables</span>
+                    <span class="kpi-badge-icon">✅</span>
+                </div>
+                <div class="kpi-value" th:text="${casosAtendidos != null ? casosAtendidos : 0}">0</div>
+                <div class="kpi-sub">Valoración completada</div>
+            </div>
+        </section>
+
+        <section class="card">
+            <div class="card-header">
+                <div>
+                    <h2 class="card-title"><span class="title-dot"></span>Casos Registrados</h2>
+                    <p class="card-subtitle">Filtra por texto o condición y actualiza el estado de atención de cada
+                        ejemplar</p>
+                </div>
+                <div class="header-actions">
+                    <span class="results-pill"
+                        th:text="${(animales != null ? #lists.size(animales) : 0) + ' mostrados'}">0 mostrados</span>
+                    <button type="button" id="toggleNewCaseBtn" class="btn-new-case">+ Nuevo caso</button>
+                    <button type="button" id="printBtn" class="btn-print">🖨️ Imprimir</button>
+                </div>
+            </div>
+
+            <!-- Creación rápida de caso nuevo desde Admin -->
+            <div id="quickCreatePanel" class="quick-create-panel">
+                <div class="quick-create-title">
+                    <span>Registrar nuevo caso desde administración</span>
+                    <button type="button" id="closeNewCaseBtn" class="modal-close" aria-label="Cerrar">✕</button>
+                </div>
+                <form th:action="@{/admin/casos/nuevo}" method="post">
+                    <div class="quick-create-grid">
+                        <input type="text" name="nombre" placeholder="Nombre o identificador *" required />
+                        <input type="text" name="especie" placeholder="Especie (ej. Búho, Oso) *" required />
+                        <select name="estadoSalud">
+                            <option value="En observación">En observación</option>
+                            <option value="Herido / Lesionado">Herido / Lesionado</option>
+                            <option value="Crítico">Crítico</option>
+                            <option value="Desorientado / En vía">Desorientado / En vía</option>
+                            <option value="Atendido">Atendido</option>
+                        </select>
+                        <button type="submit" class="btn-primary">Guardar caso</button>
+                    </div>
+                    <div class="quick-create-footer">
+                        <input type="text" name="observaciones"
+                            placeholder="Observaciones iniciales, ubicación o contacto..." />
+                    </div>
+                </form>
+            </div>
+
+            <form class="toolbar" id="filterForm" th:action="@{/admin/dashboard}" method="get">
+                <input type="text" id="searchInput" name="q" th:value="${busquedaActual}"
+                    placeholder="Buscar por ID, especie, nombre u observación..." />
+
+                <select id="condicionSelect" name="condicion">
+                    <option value="TODOS" th:selected="${condicionActual == null || condicionActual == 'TODOS'}">
+                        Todas las condiciones
+                    </option>
+                    <option value="Crítico" th:selected="${condicionActual == 'Crítico'}">Crítico</option>
+                    <option value="Herido / Lesionado" th:selected="${condicionActual == 'Herido / Lesionado'}">
+                        Herido / Lesionado
+                    </option>
+                    <option value="En observación" th:selected="${condicionActual == 'En observación'}">
+                        En observación
+                    </option>
+                    <option value="Desorientado / En vía" th:selected="${condicionActual == 'Desorientado / En vía'}">
+                        Desorientado / En vía
+                    </option>
+                    <option value="Atendido" th:selected="${condicionActual == 'Atendido'}">Atendido</option>
+                </select>
+
+                <button type="submit" class="btn-primary">Aplicar filtros</button>
+                <button type="button" id="quickCriticoBtn" class="btn-urgent-filter">🚨 Críticos</button>
+                <a th:href="@{/admin/dashboard}" class="btn-reset">Limpiar</a>
+            </form>
+
+            <div class="table-wrap">
+                <table id="casosTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Paciente / Especie</th>
+                            <th>Estado actual</th>
+                            <th>Observaciones</th>
+                            <th>Actualizar estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${animales == null || #lists.isEmpty(animales)}">
+                            <td colspan="5" class="empty-row">
+                                No hay registros que coincidan con el filtro seleccionado.
+                            </td>
+                        </tr>
+                        <tr th:each="a : ${animales}"
+                            th:with="esAtendido=${a.estadoSalud != null && (#strings.containsIgnoreCase(a.estadoSalud, 'atendid') || #strings.containsIgnoreCase(a.estadoSalud, 'establ'))}, esReciente=${casosRecientesIds != null && casosRecientesIds.contains(a.id)}">
+                            <td>
+                                <span class="id-chip" th:text="${'#' + a.id}">#1</span>
+                                <div class="case-indicators">
+                                    <span th:if="${!esAtendido}" class="indicator-tag indicator-pending">Sin
+                                        atender</span>
+                                    <span th:if="${esReciente}" class="indicator-tag indicator-recent">Reciente</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="patient-name" th:text="${a.nombre != null ? a.nombre : 'Sin nombre'}">
+                                    Paciente</div>
+                                <div class="patient-species" th:text="${a.especie != null ? a.especie : 'Especie'}">
+                                    Especie</div>
+                                <span class="notes-pill"
+                                    th:text="${(conteoHistoriales != null && conteoHistoriales.containsKey(a.id) ? conteoHistoriales.get(a.id) : 0) + ' notas clínicas'}">
+                                    0 notas clínicas
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge-status"
+                                    th:classappend="${a.estadoSalud != null && (#strings.containsIgnoreCase(a.estadoSalud, 'crít') || #strings.containsIgnoreCase(a.estadoSalud, 'crit') || #strings.containsIgnoreCase(a.estadoSalud, 'herid'))} ? ' critico' : (${esAtendido} ? ' atendido' : '')"
+                                    th:text="${a.estadoSalud != null && !#strings.isEmpty(a.estadoSalud) ? a.estadoSalud : 'En observación'}">
+                                    Estado
+                                </span>
+                            </td>
+                            <td class="obs-cell"
+                                th:text="${a.observaciones != null && !#strings.isEmpty(a.observaciones) ? a.observaciones : 'Sin observaciones registradas.'}">
+                                Observaciones
+                            </td>
+                            <td>
+                                <div class="actions-cell">
+                                    <form class="inline-form" th:action="@{/admin/casos/{id}/estado(id=${a.id})}"
+                                        method="post">
+                                        <select name="estadoSalud">
+                                            <option value="En observación"
+                                                th:selected="${a.estadoSalud == 'En observación'}">En observación
+                                            </option>
+                                            <option value="Herido / Lesionado"
+                                                th:selected="${a.estadoSalud == 'Herido / Lesionado'}">Herido /
+                                                Lesionado</option>
+                                            <option value="Crítico" th:selected="${a.estadoSalud == 'Crítico'}">Crítico
+                                            </option>
+                                            <option value="Desorientado / En vía"
+                                                th:selected="${a.estadoSalud == 'Desorientado / En vía'}">Desorientado /
+                                                En vía</option>
+                                            <option value="Atendido" th:selected="${a.estadoSalud == 'Atendido'}">
+                                                Atendido</option>
+                                        </select>
+                                        <button type="submit" class="btn-sm btn-save">Guardar</button>
+                                    </form>
+
+                                    <div class="quick-actions">
+                                        <a th:href="@{/animales/historial/{id}(id=${a.id})}"
+                                            class="btn-sm btn-quick">Ver historial</a>
+                                        <button type="button" class="btn-sm btn-edit"
+                                            th:attr="data-id=${a.id},data-nombre=${a.nombre},data-especie=${a.especie},data-estado=${a.estadoSalud},data-obs=${a.observaciones}"
+                                            onclick="abrirModalEditar(this)">
+                                            Editar
+                                        </button>
+                                        <form class="inline-form" th:action="@{/admin/casos/{id}/estado(id=${a.id})}"
+                                            method="post">
+                                            <input type="hidden" name="estadoSalud" value="En observación" />
+                                            <button type="submit" class="btn-sm btn-quick">Marcar observación</button>
+                                        </form>
+                                        <form class="inline-form" th:action="@{/admin/casos/{id}/estado(id=${a.id})}"
+                                            method="post">
+                                            <input type="hidden" name="estadoSalud" value="Atendido" />
+                                            <button type="submit" class="btn-sm btn-quick">Marcar atendido</button>
+                                        </form>
+                                        <form class="inline-form" th:action="@{/admin/casos/{id}/eliminar(id=${a.id})}"
+                                            method="post"
+                                            th:onsubmit="|return confirm('¿Seguro que deseas eliminar el caso #${a.id} y su historial clínico?');|">
+                                            <button type="submit" class="btn-sm btn-delete">Eliminar</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <!-- Modal para editar caso -->
+    <div id="editModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 id="editModalTitle" class="modal-title">Editar caso</h3>
+                <button type="button" id="closeEditModalBtn" class="modal-close" aria-label="Cerrar modal">✕</button>
+            </div>
+            <form id="editCaseForm" method="post">
+                <div class="modal-field">
+                    <label for="editNombre">Nombre del paciente</label>
+                    <input type="text" id="editNombre" name="nombre" required />
+                </div>
+                <div class="modal-field">
+                    <label for="editEspecie">Especie</label>
+                    <input type="text" id="editEspecie" name="especie" required />
+                </div>
+                <div class="modal-field">
+                    <label for="editEstado">Estado de salud</label>
+                    <select id="editEstado" name="estadoSalud">
+                        <option value="En observación">En observación</option>
+                        <option value="Herido / Lesionado">Herido / Lesionado</option>
+                        <option value="Crítico">Crítico</option>
+                        <option value="Desorientado / En vía">Desorientado / En vía</option>
+                        <option value="Atendido">Atendido</option>
+                    </select>
+                </div>
+                <div class="modal-field">
+                    <label for="editObs">Observaciones</label>
+                    <input type="text" id="editObs" name="observaciones" />
+                </div>
+                <div class="modal-actions">
+                    <button type="button" id="cancelEditBtn" class="btn-reset">Cancelar</button>
+                    <button type="submit" class="btn-primary">Guardar cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            const toggleBtn = document.getElementById('themeToggleBtn');
+            const themeIcon = document.getElementById('themeIcon');
+            const themeLabel = document.getElementById('themeLabel');
+
+            function syncThemeUI(theme) {
+                if (theme === 'light') {
+                    document.documentElement.setAttribute('data-theme', 'light');
+                    themeIcon.textContent = '🌙';
+                    themeLabel.textContent = 'Modo oscuro';
+                } else {
+                    document.documentElement.removeAttribute('data-theme');
+                    themeIcon.textContent = '☀️';
+                    themeLabel.textContent = 'Modo claro';
+                }
+            }
+
+            syncThemeUI(localStorage.getItem('auraterra-theme') || 'dark');
+
+            toggleBtn.addEventListener('click', function () {
+                const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+                const nextTheme = isLight ? 'dark' : 'light';
+                localStorage.setItem('auraterra-theme', nextTheme);
+                syncThemeUI(nextTheme);
+            });
+
+            // Panel creación rápida
+            const toggleNewCaseBtn = document.getElementById('toggleNewCaseBtn');
+            const closeNewCaseBtn = document.getElementById('closeNewCaseBtn');
+            const quickCreatePanel = document.getElementById('quickCreatePanel');
+            if (toggleNewCaseBtn && quickCreatePanel) {
+                toggleNewCaseBtn.addEventListener('click', function () {
+                    quickCreatePanel.classList.toggle('open');
+                });
+            }
+            if (closeNewCaseBtn && quickCreatePanel) {
+                closeNewCaseBtn.addEventListener('click', function () {
+                    quickCreatePanel.classList.remove('open');
+                });
+            }
+
+            // Imprimir vista limpia
+            const printBtn = document.getElementById('printBtn');
+            if (printBtn) {
+                printBtn.addEventListener('click', function () {
+                    window.print();
+                });
+            }
+
+            // Filtro rápido críticos
+            const quickCriticoBtn = document.getElementById('quickCriticoBtn');
+            const condicionSelect = document.getElementById('condicionSelect');
+            const filterForm = document.getElementById('filterForm');
+            if (quickCriticoBtn && condicionSelect && filterForm) {
+                quickCriticoBtn.addEventListener('click', function () {
+                    condicionSelect.value = 'Crítico';
+                    filterForm.submit();
+                });
+            }
+
+            // Modal editar
+            const editModal = document.getElementById('editModal');
+            const editCaseForm = document.getElementById('editCaseForm');
+            const editModalTitle = document.getElementById('editModalTitle');
+            const editNombre = document.getElementById('editNombre');
+            const editEspecie = document.getElementById('editEspecie');
+            const editEstado = document.getElementById('editEstado');
+            const editObs = document.getElementById('editObs');
+            const closeEditModalBtn = document.getElementById('closeEditModalBtn');
+            const cancelEditBtn = document.getElementById('cancelEditBtn');
+
+            window.abrirModalEditar = function (btn) {
+                const id = btn.getAttribute('data-id');
+                editModalTitle.textContent = 'Editar caso #' + id;
+                editCaseForm.action = '/admin/casos/' + id + '/editar';
+                editNombre.value = btn.getAttribute('data-nombre') || '';
+                editEspecie.value = btn.getAttribute('data-especie') || '';
+                editEstado.value = btn.getAttribute('data-estado') || 'En observación';
+                editObs.value = btn.getAttribute('data-obs') || '';
+                editModal.classList.add('open');
+            };
+
+            function cerrarModalEditar() {
+                editModal.classList.remove('open');
+            }
+
+            if (closeEditModalBtn) closeEditModalBtn.addEventListener('click', cerrarModalEditar);
+            if (cancelEditBtn) cancelEditBtn.addEventListener('click', cerrarModalEditar);
+            if (editModal) {
+                editModal.addEventListener('click', function (e) {
+                    if (e.target === editModal) cerrarModalEditar();
+                });
+            }
+        })();
+    </script>
+</body>
+
+</html>

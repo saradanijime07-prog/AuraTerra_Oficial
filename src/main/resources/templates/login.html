@@ -323,7 +323,8 @@
             letter-spacing: 0.07em;
         }
 
-        input {
+        input,
+        select {
             width: 100%;
             background-color: var(--input-bg);
             border: 1px solid var(--input-border);
@@ -335,11 +336,19 @@
             transition: all 0.18s ease;
         }
 
-        input:focus {
+        input:focus,
+        select:focus {
             outline: none;
             border-color: var(--border-focus);
             box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
             background-color: var(--input-focus-bg);
+        }
+
+        .role-note {
+            display: block;
+            margin-top: 0.45rem;
+            font-size: 0.78rem;
+            color: var(--text-muted);
         }
 
         .pass-box {
@@ -513,7 +522,7 @@
                 <div class="brand-mini-icon">🌿</div>
                 <div>
                     <strong>AuraTerra</strong>
-                    <span>Portal Ciudadano</span>
+                    <span>Plataforma de Rehabilitación y Control de Fauna</span>
                 </div>
             </a>
 
@@ -531,8 +540,7 @@
                 <div class="panel-top">
                     <div>
                         <h1 class="panel-title" id="panelTitle">Iniciar sesión</h1>
-                        <p class="panel-subtitle" id="panelSubtitle">Accede para gestionar y dar seguimiento a tus
-                            reportes</p>
+                        <p class="panel-subtitle" id="panelSubtitle">Accede a tu panel según tu rol en el sistema</p>
                     </div>
 
                     <div class="auth-tabs" id="authTabs">
@@ -541,14 +549,16 @@
                     </div>
                 </div>
 
-                <div id="feedbackBox" class="feedback-box"></div>
+                <div id="feedbackBox" class="feedback-box"
+                    th:classappend="${errorLogin != null || errorRegistro != null} ? ' error' : ''"
+                    th:text="${errorLogin != null ? errorLogin : (errorRegistro != null ? errorRegistro : '')}"></div>
 
                 <!-- INICIAR SESIÓN -->
-                <form id="loginForm" class="auth-form active">
+                <form id="loginForm" class="auth-form active" th:action="@{/login}" method="post">
                     <div class="fields-two-col">
                         <div class="field-group">
                             <label for="loginEmail">Correo electrónico</label>
-                            <input type="email" id="loginEmail" name="username" required />
+                            <input type="email" id="loginEmail" name="correo" required />
                         </div>
 
                         <div class="field-group">
@@ -584,7 +594,7 @@
                     </div>
 
                     <div class="submit-row">
-                        <button type="submit" class="btn-submit">Ingresar al portal</button>
+                        <button type="submit" class="btn-submit">Ingresar al sistema</button>
                         <p class="switch-hint">
                             ¿Aún no tienes cuenta?
                             <button type="button" class="action-link" id="openRegisterBtn">Crear cuenta</button>
@@ -593,28 +603,31 @@
                 </form>
 
                 <!-- CREAR CUENTA -->
-                <form id="registerForm" class="auth-form">
+                <form id="registerForm" class="auth-form" th:action="@{/registro}" method="post">
+                    <input type="hidden" name="rol" value="CIUDADANO" />
+
                     <div class="fields-two-col">
                         <div class="field-group">
                             <label for="regName">Nombre completo</label>
-                            <input type="text" id="regName" required />
+                            <input type="text" id="regName" name="nombre" required />
                         </div>
                         <div class="field-group">
                             <label for="regPhone">Teléfono</label>
-                            <input type="tel" id="regPhone" required />
+                            <input type="tel" id="regPhone" name="telefono" required />
                         </div>
                     </div>
 
                     <div class="field-group">
                         <label for="regEmail">Correo electrónico</label>
-                        <input type="email" id="regEmail" required />
+                        <input type="email" id="regEmail" name="correo" required />
+                        <span class="role-note"> </span>
                     </div>
 
                     <div class="fields-two-col">
                         <div class="field-group">
                             <label for="regPass">Contraseña (mín. 6)</label>
                             <div class="pass-box">
-                                <input type="password" id="regPass" minlength="6" required />
+                                <input type="password" id="regPass" name="password" minlength="6" required />
                                 <button type="button" class="eye-btn" data-target="regPass"
                                     aria-label="Mostrar u ocultar contraseña">
                                     <svg class="eye-open" viewBox="0 0 24 24">
@@ -637,7 +650,8 @@
                         <div class="field-group">
                             <label for="regPassConfirm">Confirmar contraseña</label>
                             <div class="pass-box">
-                                <input type="password" id="regPassConfirm" minlength="6" required />
+                                <input type="password" id="regPassConfirm" name="passwordConfirm" minlength="6"
+                                    required />
                                 <button type="button" class="eye-btn" data-target="regPassConfirm"
                                     aria-label="Mostrar u ocultar contraseña">
                                     <svg class="eye-open" viewBox="0 0 24 24">
@@ -677,8 +691,8 @@
                 <!-- RESTAURAR CONTRASEÑA -->
                 <form id="recoverForm" class="auth-form">
                     <div class="field-group">
-                        <label for="recoverEmail">Correo electrónico registrado</label>
-                        <input type="email" id="recoverEmail" required />
+                        <label for="recoverEmail">Correo electrónico</label>
+                        <input type="email" id="recoverEmail" name="correo" required />
                     </div>
 
                     <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 1.35rem;">
@@ -695,7 +709,7 @@
         </main>
     </div>
 
-    <script>
+    <script th:inline="javascript">
         (function () {
             const toggleBtn = document.getElementById('themeToggleBtn');
             const themeIcon = document.getElementById('themeIcon');
@@ -729,18 +743,16 @@
             const panelTitle = document.getElementById('panelTitle');
             const panelSubtitle = document.getElementById('panelSubtitle');
 
-            function clearFeedback() {
-                feedbackBox.className = 'feedback-box';
-                feedbackBox.textContent = '';
-            }
-
             function showFeedback(type, text) {
                 feedbackBox.className = 'feedback-box ' + type;
                 feedbackBox.textContent = text;
             }
 
-            function setMode(formId) {
-                clearFeedback();
+            function setMode(formId, keepFeedback) {
+                if (!keepFeedback) {
+                    feedbackBox.className = 'feedback-box';
+                    feedbackBox.textContent = '';
+                }
                 forms.forEach(f => f.classList.toggle('active', f.id === formId));
 
                 if (formId === 'recoverForm') {
@@ -752,27 +764,27 @@
                     tabButtons.forEach(b => b.classList.toggle('active', b.dataset.target === formId));
                     if (formId === 'registerForm') {
                         panelTitle.textContent = 'Crear cuenta';
-                        panelSubtitle.textContent = 'Completa tus datos para registrarte en el portal';
+                        panelSubtitle.textContent = 'Completa tus datos para registrarte en la base de datos';
                     } else {
                         panelTitle.textContent = 'Iniciar sesión';
-                        panelSubtitle.textContent = 'Accede para gestionar y dar seguimiento a tus reportes';
+                        panelSubtitle.textContent = 'Accede a tu panel según tu rol en el sistema';
                     }
                 }
             }
 
             tabButtons.forEach(btn => {
-                btn.addEventListener('click', () => setMode(btn.dataset.target));
+                btn.addEventListener('click', () => setMode(btn.dataset.target, false));
             });
 
-            document.getElementById('openRecoverBtn').addEventListener('click', () => setMode('recoverForm'));
-            document.getElementById('openRegisterBtn').addEventListener('click', () => setMode('registerForm'));
-            document.getElementById('backFromRegBtn').addEventListener('click', () => setMode('loginForm'));
-            document.getElementById('backFromRecoverBtn').addEventListener('click', () => setMode('loginForm'));
+            document.getElementById('openRecoverBtn').addEventListener('click', () => setMode('recoverForm', false));
+            document.getElementById('openRegisterBtn').addEventListener('click', () => setMode('registerForm', false));
+            document.getElementById('backFromRegBtn').addEventListener('click', () => setMode('loginForm', false));
+            document.getElementById('backFromRecoverBtn').addEventListener('click', () => setMode('loginForm', false));
 
-            // Abrir directamente en pestaña Crear cuenta si viene ?tab=register
+            const serverTab = /*[[${activeTab}]]*/ null;
             const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('tab') === 'register') {
-                setMode('registerForm');
+            if (serverTab === 'registerForm' || urlParams.get('tab') === 'register') {
+                setMode('registerForm', Boolean(serverTab));
             }
 
             document.querySelectorAll('.eye-btn').forEach(btn => {
@@ -785,71 +797,13 @@
                 });
             });
 
-            function getUsers() {
-                try {
-                    return JSON.parse(localStorage.getItem('auraterra-citizen-users')) || [];
-                } catch (e) {
-                    return [];
-                }
-            }
-
-            function saveUsers(users) {
-                localStorage.setItem('auraterra-citizen-users', JSON.stringify(users));
-            }
-
-            // INICIAR SESIÓN -> valida credenciales y manda directo a /ciudadano/inicio
-            document.getElementById('loginForm').addEventListener('submit', function (e) {
-                e.preventDefault();
-                const email = document.getElementById('loginEmail').value.trim().toLowerCase();
-                const password = document.getElementById('loginPassword').value;
-
-                const users = getUsers();
-                const found = users.find(u => u.email.toLowerCase() === email);
-
-                if (found && found.password !== password) {
-                    showFeedback('error', 'Contraseña incorrecta para este correo.');
-                    return;
-                }
-
-                const sessionUser = found
-                    ? { name: found.name, phone: found.phone, email: found.email }
-                    : { name: email.split('@')[0], phone: '', email: email };
-
-                localStorage.setItem('auraterra-citizen-user', JSON.stringify(sessionUser));
-                window.location.href = '/ciudadano/inicio?usuarioEmail=' + encodeURIComponent(sessionUser.email) + '#mis-reportes';
-            });
-
-            // CREAR CUENTA -> registra el usuario y lo manda a /ciudadano/inicio con sesión activa
             document.getElementById('registerForm').addEventListener('submit', function (e) {
-                e.preventDefault();
-                const name = document.getElementById('regName').value.trim();
-                const phone = document.getElementById('regPhone').value.trim();
-                const email = document.getElementById('regEmail').value.trim();
                 const pass = document.getElementById('regPass').value;
                 const confirm = document.getElementById('regPassConfirm').value;
-
                 if (pass !== confirm) {
+                    e.preventDefault();
                     showFeedback('error', 'Las contraseñas no coinciden.');
-                    return;
                 }
-
-                const users = getUsers();
-                const exists = users.some(u => u.email.toLowerCase() === email.toLowerCase());
-                if (exists) {
-                    showFeedback('error', 'Ese correo ya está registrado. Inicia sesión con tus credenciales.');
-                    return;
-                }
-
-                users.push({ name, phone, email, password: pass });
-                saveUsers(users);
-
-                const sessionUser = { name, phone, email };
-                localStorage.setItem('auraterra-citizen-user', JSON.stringify(sessionUser));
-
-                showFeedback('success', 'Cuenta registrada correctamente. Redirigiendo al portal...');
-                setTimeout(function () {
-                    window.location.href = '/ciudadano/inicio?usuarioEmail=' + encodeURIComponent(email) + '#mis-reportes';
-                }, 450);
             });
 
             document.getElementById('recoverForm').addEventListener('submit', function (e) {

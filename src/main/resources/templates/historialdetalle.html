@@ -25,8 +25,10 @@
             --amber-soft: #fbbf24;
             --amber-bg: rgba(251, 191, 36, 0.11);
             --amber-border: rgba(251, 191, 36, 0.28);
+            --danger-bg: rgba(239, 68, 68, 0.14);
+            --danger-border: rgba(239, 68, 68, 0.35);
+            --danger-text: #fca5a5;
 
-            /* Transparente con desenfoque y superficies (Modo Oscuro) */
             --glass-header-bg: rgba(14, 23, 20, 0.36);
             --glass-header-hover: rgba(19, 33, 29, 0.48);
             --glass-border: rgba(255, 255, 255, 0.12);
@@ -64,8 +66,10 @@
             --amber-soft: #d97706;
             --amber-bg: rgba(217, 119, 6, 0.12);
             --amber-border: rgba(217, 119, 6, 0.28);
+            --danger-bg: rgba(220, 38, 38, 0.1);
+            --danger-border: rgba(220, 38, 38, 0.28);
+            --danger-text: #b91c1c;
 
-            /* Transparente con desenfoque y superficies (Modo Claro) */
             --glass-header-bg: rgba(255, 255, 255, 0.56);
             --glass-header-hover: rgba(255, 255, 255, 0.75);
             --glass-border: rgba(15, 36, 29, 0.12);
@@ -84,7 +88,9 @@
             --timeline-date-text: #047857;
         }
 
-        * {
+        *,
+        *::before,
+        *::after {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
@@ -201,6 +207,26 @@
             color: var(--pill-estado-text);
         }
 
+        .alert {
+            padding: 0.85rem 1.1rem;
+            border-radius: 12px;
+            margin-bottom: 1.25rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background-color: var(--pill-estado-bg);
+            border: 1px solid var(--pill-estado-border);
+            color: var(--pill-estado-text);
+        }
+
+        .alert-error {
+            background-color: var(--danger-bg);
+            border: 1px solid var(--danger-border);
+            color: var(--danger-text);
+        }
+
         .card {
             background-color: var(--bg-surface);
             border: 1px solid var(--border-color);
@@ -258,6 +284,7 @@
         }
 
         input[type="date"],
+        input[type="text"],
         textarea {
             width: 100%;
             background-color: var(--bg-input);
@@ -356,9 +383,16 @@
             letter-spacing: 0.04em;
         }
 
+        .timeline-diag {
+            font-size: 0.92rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 0.3rem;
+        }
+
         .timeline-desc {
             font-size: 0.89rem;
-            color: var(--text-main);
+            color: var(--text-muted);
             line-height: 1.5;
             white-space: pre-line;
         }
@@ -389,7 +423,9 @@
             <div>
                 <a th:href="@{/animales/vista}" class="back-btn">← Volver al Dashboard</a>
                 <h1 class="expediente-title"
-                    th:text="'Expediente: ' + ${animal.nombre} + ' (' + ${animal.especie} + ')'">Expediente Médico</h1>
+                    th:text="${'Expediente: ' + (animal.nombre ?: 'Sin nombre') + ' (' + (animal.especie ?: 'Sin especie') + ')'}">
+                    Expediente Médico
+                </h1>
                 <div class="expediente-meta">
                     <span class="meta-pill neutro" th:if="${animal.id != null}" th:text="${'#' + animal.id}">#1</span>
                     <span class="meta-pill" th:if="${animal.edad != null}"
@@ -406,6 +442,9 @@
             </button>
         </header>
 
+        <div th:if="${mensajeExito}" class="alert alert-success" th:text="${mensajeExito}"></div>
+        <div th:if="${mensajeError}" class="alert alert-error" th:text="${mensajeError}"></div>
+
         <!-- Formulario para agregar nota médica -->
         <div class="card">
             <div class="card-header">
@@ -415,12 +454,17 @@
             <form th:action="@{/animales/historial/guardar}" th:object="${nuevoHistorial}" method="post">
                 <input type="hidden" th:field="*{animal.id}" />
                 <div class="form-group">
-                    <label>Fecha de atención</label>
-                    <input type="date" th:field="*{fecha}" required />
+                    <label for="diagnostico">Diagnóstico</label>
+                    <input id="diagnostico" type="text" th:field="*{diagnostico}"
+                        placeholder="Ej. Deshidratación moderada, trauma leve..." required />
                 </div>
                 <div class="form-group">
-                    <label>Descripción del tratamiento / evolución</label>
-                    <textarea th:field="*{descripcionTratamiento}"
+                    <label for="fecha">Fecha de atención</label>
+                    <input id="fecha" type="date" th:field="*{fecha}" required />
+                </div>
+                <div class="form-group">
+                    <label for="descripcionTratamiento">Descripción del tratamiento / evolución</label>
+                    <textarea id="descripcionTratamiento" th:field="*{descripcionTratamiento}"
                         placeholder="Detalles de medicación, curaciones, estado clínico..." required></textarea>
                 </div>
                 <button type="submit" class="btn-primary">Guardar nota médica</button>
@@ -439,10 +483,13 @@
             <div class="timeline-list" th:if="${!#lists.isEmpty(historiales)}">
                 <div th:each="h : ${historiales}" class="timeline-item">
                     <div class="timeline-top">
-                        <span class="timeline-date" th:text="${h.fecha}">Fecha</span>
+                        <span class="timeline-date" th:text="${h.fecha != null ? h.fecha : 'Sin fecha'}">Fecha</span>
                         <span class="timeline-tag">Control clínico</span>
                     </div>
-                    <div th:text="${h.descripcionTratamiento}" class="timeline-desc">Descripción</div>
+                    <div th:if="${h.diagnostico != null && !#strings.isEmpty(h.diagnostico)}" th:text="${h.diagnostico}"
+                        class="timeline-diag">Diagnóstico</div>
+                    <div th:text="${h.descripcionTratamiento != null ? h.descripcionTratamiento : ''}"
+                        class="timeline-desc">Descripción</div>
                 </div>
             </div>
         </div>

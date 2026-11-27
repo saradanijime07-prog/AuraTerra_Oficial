@@ -1,98 +1,89 @@
 package com.auraterra.auraterra.controller;
 
 import com.auraterra.auraterra.model.Animal;
-import com.auraterra.auraterra.repository.AnimalRepository;
-import java.util.Collections;
-import java.util.List;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import com.auraterra.auraterra.model.Usuario;
+import com.auraterra.auraterra.service.AnimalService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.List;
+import java.util.Locale;
 
 @Controller
 @RequestMapping("/ciudadano")
 public class CiudadanoController {
 
-    private final AnimalRepository animalRepository;
+    private final AnimalService animalService;
 
-    public CiudadanoController(AnimalRepository animalRepository) {
-        this.animalRepository = animalRepository;
+    public CiudadanoController(AnimalService animalService) {
+        this.animalService = animalService;
     }
 
     @GetMapping("/inicio")
-    public String mostrarPortalCiudadano(
-            @RequestParam(name = "condicion", required = false, defaultValue = "TODOS") String condicion,
-            @RequestParam(name = "q", required = false, defaultValue = "") String q,
-            @RequestParam(name = "usuarioEmail", required = false, defaultValue = "") String usuarioEmail,
-            @RequestParam(name = "page", required = false, defaultValue = "0") int page,
+    public String inicioCiudadano(
+            @RequestParam(value = "usuarioEmail", required = false) String usuarioEmail,
+            @RequestParam(value = "busqueda", required = false) String busqueda,
+            @RequestParam(value = "estadoSalud", required = false) String estadoSalud,
+            HttpSession session,
             Model model) {
+        Usuario usuario = (Usuario) session.getAttribute("usuarioLogueado");
+        String correoFiltro = usuario != null ? usuario.getCorreo() : usuarioEmail;
 
-        int tamanoPagina = 6;
-        Page<Animal> paginaCasos = animalRepository.buscarCasosCiudadanos(
-                condicion,
-                q.trim(),
-                PageRequest.of(Math.max(page, 0), tamanoPagina));
+        List<Animal> animalesFiltrados = animalService.filtrarMulticriterio(busqueda, estadoSalud, null);
+        List<Animal> todosLosAnimales = animalService.obtenerTodos();
 
-        String filtroUsuario = usuarioEmail.trim();
-        List<Animal> misReportes = filtroUsuario.isEmpty()
-                ? Collections.emptyList()
-                : animalRepository.buscarReportesPorUsuario(filtroUsuario);
+        List<Animal> misReportes = (correoFiltro != null && !correoFiltro.isBlank())
+                ? todosLosAnimales.stream()
+                        .filter(a -> a.getObservaciones() != null
+                                && a.getObservaciones().toLowerCase(Locale.ROOT)
+                                        .contains(correoFiltro.trim().toLowerCase(Locale.ROOT)))
+                        .toList()
+                : List.of();
 
-        model.addAttribute("paginaCasos", paginaCasos);
-        model.addAttribute("animales", paginaCasos.getContent());
-        model.addAttribute("condicionActual", condicion);
-        model.addAttribute("busquedaActual", q);
-        model.addAttribute("usuarioEmailActual", filtroUsuario);
+        model.addAttribute("usuarioActual", usuario);
+        model.addAttribute("correoFiltro", correoFiltro != null ? correoFiltro : "");
+        model.addAttribute("busqueda", busqueda != null ? busqueda : "");
+        model.addAttribute("estadoSalud", estadoSalud != null ? estadoSalud : "");
+        model.addAttribute("reportes", animalesFiltrados);
         model.addAttribute("misReportes", misReportes);
+        model.addAttribute("totalMisReportes", misReportes.size());
+        if (!model.containsAttribute("nuevoReporte")) {
+            model.addAttribute("nuevoReporte", new Animal());
+        }
 
         return "inicio";
     }
 
     @PostMapping("/reportar")
-    public String recibirReporteCiudadano(
-            @RequestParam String especie,
-            @RequestParam String estadoSalud,
-            @RequestParam String ubicacion,
-            @RequestParam(required = false) String contacto,
-            @RequestParam(required = false) String usuarioEmail,
-            @RequestParam String observaciones,
+    public String crearReporte(
+            @ModelAttribute("nuevoReporte") Animal reporte,
+            HttpSession session,
             RedirectAttributes redirectAttributes) {
+        Usuario usuario = (Usuario) session.getAttribute("usuarioLogueado");
+        String correoReportante = usuario != null ? usuario.getCorreo() : null;
 
-        Animal nuevoAnimal = new Animal();
-        nuevoAnimal.setNombre(especie.trim());
-        nuevoAnimal.setEspecie(especie.trim());
-        nuevoAnimal.setEstadoSalud(estadoSalud);
+        try {
+            if (correoReportante != null && !correoReportante.isBlank()) {
+                String obsActual = reporte.getObservaciones() != null ? reporte.getObservaciones().trim() : "";
+                String marcaCorreo = "[Reportante: " + correoReportante.trim().toLowerCase(Locale.ROOT) + "]";
+                if (!obsActual.toLowerCase(Locale.ROOT).contains(correoReportante.trim().toLowerCase(Locale.ROOT))) {
+                    reporte.setObservaciones(obsActual.isBlank() ? marcaCorreo : obsActual + " " + marcaCorreo);
+                }
+            }
 
-        String correoOContacto = (contacto != null && !contacto.isBlank())
-                ? contacto.trim()
-                : (usuarioEmail != null ? usuarioEmail.trim() : "");
-
-        // Si agregas el campo contactoReportante en tu entidad Animal, guárdalo aquí:
-        // nuevoAnimal.setContactoReportante(correoOContacto);
-
-        String detalle = "Zona: " + ubicacion.trim() + " — " + observaciones.trim();
-        if (!correoOContacto.isEmpty()) {
-            detalle += " (Contacto: " + correoOContacto + ")";
-        }
-        nuevoAnimal.setObservaciones(detalle);
-
-        Animal guardado = animalRepository.save(nuevoAnimal);
-
-        redirectAttributes.addFlashAttribute(
-                "mensajeExito",
-                "¡Gracias por tu reporte! Caso #" + guardado.getId()
-                        + " registrado: " + especie.trim()
-                        + " (" + estadoSalud + ") en " + ubicacion.trim() + ".");
-
-        if (!correoOContacto.isEmpty()) {
-            redirectAttributes.addAttribute("usuarioEmail", correoOContacto);
+            animalService.guardarAnimal(reporte);
+            redirectAttributes.addFlashAttribute("mensajeReporte", "Tu reporte fue registrado correctamente.");
+        } catch (IllegalArgumentException ex) {
+            redirectAttributes.addFlashAttribute("errorReporte", ex.getMessage());
+            redirectAttributes.addFlashAttribute("nuevoReporte", reporte);
         }
 
+        if (correoReportante != null && !correoReportante.isBlank()) {
+            return "redirect:/ciudadano/inicio?usuarioEmail=" + correoReportante + "#mis-reportes";
+        }
         return "redirect:/ciudadano/inicio#mis-reportes";
     }
 }

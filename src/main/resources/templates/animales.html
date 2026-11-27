@@ -30,7 +30,6 @@
             --warning: #f59e0b;
             --warning-bg: rgba(245, 158, 11, 0.12);
 
-            /* Transparente con desenfoque (Modo Oscuro) */
             --glass-bg: rgba(14, 22, 19, 0.36);
             --glass-bg-hover: rgba(18, 29, 25, 0.46);
             --glass-nav-bg: rgba(7, 13, 11, 0.35);
@@ -61,7 +60,6 @@
             --warning-text: #fbbf24;
             --warning-border: rgba(245, 158, 11, 0.32);
 
-            /* Recuadro Pacientes en Seguimiento: diseño moderno y limpio (Modo Oscuro) */
             --seguimiento-bg: linear-gradient(165deg, rgba(16, 29, 25, 0.96) 0%, rgba(9, 17, 15, 0.99) 100%);
             --seguimiento-border: rgba(110, 231, 183, 0.18);
             --seguimiento-divider: rgba(255, 255, 255, 0.065);
@@ -70,7 +68,6 @@
             --seguimiento-row-hover: rgba(16, 185, 129, 0.055);
             --seguimiento-subtext: #94b2a7;
 
-            /* Morado oscuro moderno para ID y Editar + botones refinados */
             --purple-dark-bg: rgba(109, 40, 217, 0.24);
             --purple-dark-hover-bg: rgba(124, 58, 237, 0.36);
             --purple-dark-border: rgba(167, 139, 250, 0.36);
@@ -109,7 +106,6 @@
             --warning: #d97706;
             --warning-bg: rgba(217, 119, 6, 0.12);
 
-            /* Transparente con desenfoque (Modo Claro) */
             --glass-bg: rgba(255, 255, 255, 0.52);
             --glass-bg-hover: rgba(255, 255, 255, 0.72);
             --glass-nav-bg: rgba(240, 246, 243, 0.55);
@@ -140,7 +136,6 @@
             --warning-text: #b45309;
             --warning-border: rgba(217, 119, 6, 0.3);
 
-            /* Recuadro Pacientes en Seguimiento: diseño moderno y limpio (Modo Claro) */
             --seguimiento-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(246, 250, 248, 0.99) 100%);
             --seguimiento-border: rgba(5, 150, 105, 0.18);
             --seguimiento-divider: rgba(15, 36, 29, 0.075);
@@ -149,7 +144,6 @@
             --seguimiento-row-hover: rgba(5, 150, 105, 0.04);
             --seguimiento-subtext: #536f65;
 
-            /* Morado oscuro moderno para ID y Editar + botones refinados (Modo Claro) */
             --purple-dark-bg: rgba(91, 33, 182, 0.12);
             --purple-dark-hover-bg: rgba(109, 40, 217, 0.2);
             --purple-dark-border: rgba(91, 33, 182, 0.28);
@@ -184,7 +178,6 @@
             margin: 0 auto;
         }
 
-        /* Header transparente con desenfoque */
         header {
             position: sticky;
             top: 0.75rem;
@@ -329,7 +322,6 @@
             transform: translateY(-1px);
         }
 
-        /* KPI Cards transparentes con desenfoque */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(225px, 1fr));
@@ -409,7 +401,6 @@
             white-space: nowrap;
         }
 
-        /* Content Cards */
         .card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
@@ -513,7 +504,6 @@
             min-height: 86px;
         }
 
-        /* Buttons */
         .btn-primary {
             background-color: var(--accent);
             color: var(--accent-text-on-accent);
@@ -585,9 +575,6 @@
             transform: translateY(-1px);
         }
 
-        /* =========================================================
-           RECUADRO DE PACIENTES EN SEGUIMIENTO: DISEÑO MODERNO Y LIMPIO
-           ========================================================= */
         .card-seguimiento-moderno {
             background: var(--seguimiento-bg);
             border: 1px solid var(--seguimiento-border);
@@ -770,7 +757,6 @@
             white-space: nowrap;
         }
 
-        /* Status Badges */
         .badge-status {
             display: inline-flex;
             align-items: center;
@@ -887,7 +873,6 @@
             <div class="header-controls">
                 <nav class="nav-links">
                     <a th:href="@{/animales/vista}" class="nav-link active">🩺 Clínico / Veterinario</a>
-                    <a th:href="@{/admin/dashboard}" class="nav-link">🛡️ Administrador</a>
                     <a th:href="@{/ciudadano/inicio}" class="nav-link">🌿 Portal Ciudadano</a>
                 </nav>
                 <button type="button" id="themeToggleBtn" class="theme-btn"
@@ -899,17 +884,17 @@
         </header>
 
         <!-- Formulario de Registro / Edición -->
-        <div class="card">
+        <div class="card" id="formularioPacienteCard">
             <div class="card-header">
                 <div class="card-title-wrap">
                     <h2 class="card-title"
-                        th:text="${nuevoAnimal.id != null} ? '✏️ Editar Paciente #' + ${nuevoAnimal.id} : '✨ Ingreso de Nuevo Paciente'">
+                        th:text="${animalForm != null && animalForm.id != null} ? '✏️ Editar Paciente #' + ${animalForm.id} : '✨ Ingreso de Nuevo Paciente'">
                         Ingreso de Nuevo Paciente</h2>
                     <span class="card-subtitle">Registra datos clínicos iniciales, especie y condiciones de
                         rescate</span>
                 </div>
             </div>
-            <form th:action="@{/animales/guardar}" th:object="${nuevoAnimal}" method="post">
+            <form th:action="@{/animales/guardar}" th:object="${animalForm}" method="post">
                 <input type="hidden" th:field="*{id}" />
                 <div class="form-grid">
                     <div class="form-group">
@@ -922,7 +907,7 @@
                     </div>
                     <div class="form-group">
                         <label>Edad Estimada</label>
-                        <input type="number" th:field="*{edad}" placeholder="Años" required />
+                        <input type="number" th:field="*{edad}" placeholder="Años" />
                     </div>
                     <div class="form-group">
                         <label>Estado Diagnóstico</label>
@@ -936,18 +921,18 @@
                 </div>
                 <div style="display: flex; gap: 1.25rem; align-items: center;">
                     <button type="submit" class="btn-primary">
-                        <span th:text="${nuevoAnimal.id != null} ? '💾' : '➕'"></span>
+                        <span th:text="${animalForm != null && animalForm.id != null} ? '💾' : '➕'"></span>
                         <span
-                            th:text="${nuevoAnimal.id != null} ? 'Actualizar Paciente' : 'Registrar Paciente'">Registrar
+                            th:text="${animalForm != null && animalForm.id != null} ? 'Actualizar Paciente' : 'Registrar Paciente'">Registrar
                             Paciente</span>
                     </button>
-                    <a th:if="${nuevoAnimal.id != null}" th:href="@{/animales/vista}" class="cancel-link">Cancelar
-                        edición</a>
+                    <a th:if="${animalForm != null && animalForm.id != null}" th:href="@{/animales/vista}"
+                        class="cancel-link">Cancelar edición</a>
                 </div>
             </form>
         </div>
 
-        <!-- Tarjetas de Estadísticas (KPIs) justo arriba de Pacientes en Seguimiento -->
+        <!-- Tarjetas de Estadísticas (KPIs) -->
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-icon">🐾</div>
@@ -979,7 +964,7 @@
             </div>
         </div>
 
-        <!-- Tabla y Buscador (Diseño limpio y moderno) -->
+        <!-- Tabla y Buscador -->
         <div class="card-seguimiento-moderno">
             <div class="seguimiento-top">
                 <div class="seguimiento-heading">
